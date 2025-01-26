@@ -14,7 +14,7 @@ class ContactImageUpdater {
     private let contactStore = CNContactStore()
     private let queue = DispatchQueue(label: "ContactImageUpdaterQueue")
 
-    func updateContactImage(bgValue: String, extra: String, stale: Bool) {
+    func updateContactImage(bgValue: String, extra: String, stale: Bool, txt: String) {
         queue.async {
             guard CNContactStore.authorizationStatus(for: .contacts) == .authorized else {
                 print("Access to contacts is not authorized.")
@@ -36,6 +36,7 @@ class ContactImageUpdater {
 
                 if let contact = contacts.first, let mutableContact = contact.mutableCopy() as? CNMutableContact {
                     mutableContact.imageData = imageData
+                    mutableContact.familyName = txt
                     let saveRequest = CNSaveRequest()
                     saveRequest.update(mutableContact)
                     try self.contactStore.execute(saveRequest)
@@ -44,6 +45,7 @@ class ContactImageUpdater {
                     let newContact = CNMutableContact()
                     newContact.givenName = contactName
                     newContact.imageData = imageData
+                    newContact.familyName = txt
                     let saveRequest = CNSaveRequest()
                     saveRequest.add(newContact, toContainerWithIdentifier: nil)
                     try self.contactStore.execute(saveRequest)

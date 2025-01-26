@@ -286,7 +286,17 @@ extension MainViewController {
             snoozer.BGLabel.text = snoozerBG
             snoozer.DirectionLabel.text = snoozerDirection
             snoozer.DeltaLabel.text = snoozerDelta
-
+            
+            //Contact data
+            let loop = self.latestLoopStatusString
+            //let override = String(format: "%.0f", self.currentOverride*100)+"%"
+            let iob = String(self.infoManager.tableData[0].value)
+            let cob = String(self.infoManager.tableData[1].value)
+            let basal = self.infoManager.tableData[2].value
+            let override = self.infoManager.tableData[3].value
+            let contactText = "\(snoozerBG)\(snoozerDelta)\(snoozerDirection) i:\(iob) c:\(cob) \(loop) o:\(override) b:\(basal)"
+            
+            
             // Update contact
             if ObservableUserDefaults.shared.contactEnabled.value {
                 var extra: String = ""
@@ -297,7 +307,7 @@ extension MainViewController {
                     extra = snoozerDelta
                 }
 
-                self.contactImageUpdater.updateContactImage(bgValue: bgTextStr, extra: extra, stale: deltaTime >= 12)
+                self.contactImageUpdater.updateContactImage(bgValue: bgTextStr, extra: extra, stale: deltaTime >= 12, txt: contactText)
             }
         }
     }
