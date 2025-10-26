@@ -192,6 +192,8 @@
 		DDCC3A4D2DDBB77C006F1C10 /* BatteryAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCC3A4C2DDBB77C006F1C10 /* BatteryAlarmEditor.swift */; };
 		CEAE5A1A975C4AF18ED529CB /* PumpBatteryCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB6C97B49BC4B52B9F2838B /* PumpBatteryCondition.swift */; };
 		E8ECCFAF8161433BB87E672B /* PumpBatteryAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94461A074CD24360A031ACDA /* PumpBatteryAlarmEditor.swift */; };
+		BA1234AB5678CD90EF123456 /* BAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1234CD5678EF12AB345678 /* BAge.swift */; };
+		BA1234EF5678AB34CD567890 /* PumpBatteryChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1234FE5678CD56EF789012 /* PumpBatteryChange.swift */; };
 		DDCC3A4F2DDC5B54006F1C10 /* BatteryDropCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCC3A4E2DDC5B54006F1C10 /* BatteryDropCondition.swift */; };
 		DDCC3A542DDC5D62006F1C10 /* BatteryDropAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCC3A532DDC5D62006F1C10 /* BatteryDropAlarmEditor.swift */; };
 		DDCC3A562DDC9617006F1C10 /* MissedBolusCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCC3A552DDC9617006F1C10 /* MissedBolusCondition.swift */; };
@@ -586,6 +588,8 @@
 		DDCC3A4C2DDBB77C006F1C10 /* BatteryAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryAlarmEditor.swift; sourceTree = "<group>"; };
 		2BB6C97B49BC4B52B9F2838B /* PumpBatteryCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpBatteryCondition.swift; sourceTree = "<group>"; };
 		94461A074CD24360A031ACDA /* PumpBatteryAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpBatteryAlarmEditor.swift; sourceTree = "<group>"; };
+		BA1234CD5678EF12AB345678 /* BAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BAge.swift; sourceTree = "<group>"; };
+		BA1234FE5678CD56EF789012 /* PumpBatteryChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpBatteryChange.swift; sourceTree = "<group>"; };
 		DDCC3A4E2DDC5B54006F1C10 /* BatteryDropCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDropCondition.swift; sourceTree = "<group>"; };
 		DDCC3A532DDC5D62006F1C10 /* BatteryDropAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDropAlarmEditor.swift; sourceTree = "<group>"; };
 		DDCC3A552DDC9617006F1C10 /* MissedBolusCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissedBolusCondition.swift; sourceTree = "<group>"; };
@@ -976,6 +980,7 @@
 				DD608A092C23593900F91132 /* SMB.swift */,
 				DDD10F0A2C54192A00D76A8E /* TemporaryTarget.swift */,
 				DD5334202C60EBEE00062F9D /* InsulinCartridgeChange.swift */,
+				BA1234FE5678CD56EF789012 /* PumpBatteryChange.swift */,
 			);
 			path = Treatments;
 			sourceTree = "<group>";
@@ -1015,6 +1020,7 @@
 				DD0C0C5F2C415B9D00DBADDF /* ProfileManager.swift */,
 				DD0C0C612C4175FD00DBADDF /* NSProfile.swift */,
 				DD5334222C60ED3600062F9D /* IAge.swift */,
+				BA1234CD5678EF12AB345678 /* BAge.swift */,
 			);
 			path = Nightscout;
 			sourceTree = "<group>";
@@ -1917,6 +1923,7 @@
 				DDEF503F2D32754F00999A5D /* ProfileTask.swift in Sources */,
 				DD7F4C052DD4BBE200D449E9 /* NotLoopingCondition.swift in Sources */,
 				DD5334212C60EBEE00062F9D /* InsulinCartridgeChange.swift in Sources */,
+				BA1234EF5678AB34CD567890 /* PumpBatteryChange.swift in Sources */,
 				DDDB86F12DF7223C00AADDAC /* DeleteAlarmSection.swift in Sources */,
 				DD7F4B9D2DD1EAE500D449E9 /* AlarmAudioSection.swift in Sources */,
 				FC97881E2485969B00A7906C /* NightScoutViewController.swift in Sources */,
@@ -2106,6 +2113,7 @@
 				FCE537BC249A4D7D00F80BF8 /* carbBolusArrays.swift in Sources */,
 				DD8316462DE49B09004467AA /* GraphSettingsView.swift in Sources */,
 				DD5334232C60ED3600062F9D /* IAge.swift in Sources */,
+				BA1234AB5678CD90EF123456 /* BAge.swift in Sources */,
 				FCD2A27D24C9D044009F7B7B /* Globals.swift in Sources */,
 				DD0C0C642C45A59400DBADDF /* HKUnit+Extensions.swift in Sources */,
 				DDC6CA412DD8CCCE0060EE25 /* SensorAgeAlarmEditor.swift in Sources */,
