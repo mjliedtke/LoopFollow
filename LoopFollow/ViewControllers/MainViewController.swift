@@ -54,6 +54,7 @@ class MainViewController: UIViewController, UITableViewDataSource, ChartViewDele
     var currentSage: sageData?
     var currentCage: cageData?
     var currentIage: iageData?
+    var currentBage: bageData?
 
     var backgroundTask = BackgroundTask()
 
