@@ -42,12 +42,13 @@ class NightscoutUtils {
         case treatments
         case deviceStatus
         case iage = "Insulin Change"
+        case bage = "Pump Battery Change"
         case temporaryOverride = "Temporary Override"
         case temporaryOverrideCancel = "Temporary Override Cancel"
 
         var endpoint: String {
             switch self {
-            case .cage, .carbsToday, .sage, .treatments, .iage:
+            case .cage, .carbsToday, .sage, .treatments, .iage, .bage:
                 return "/api/v1/treatments.json"
             case .sgv:
                 return "/api/v1/entries.json"
