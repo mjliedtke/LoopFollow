@@ -96,6 +96,8 @@
 		DD50C7552D0862770057AE6F /* ContactImageUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD50C7542D0862770057AE6F /* ContactImageUpdater.swift */; };
 		DD5334212C60EBEE00062F9D /* InsulinCartridgeChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334202C60EBEE00062F9D /* InsulinCartridgeChange.swift */; };
 		DD5334232C60ED3600062F9D /* IAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334222C60ED3600062F9D /* IAge.swift */; };
+		E59C252B991E7D0F1532AB10 /* BAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD895B618765CFE21EC2DB5 /* BAge.swift */; };
+		46D4837DBADA43F7668BBFF9 /* PumpBatteryChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18528967505C7AB03B34B31 /* PumpBatteryChange.swift */; };
 		DD5334272C61668800062F9D /* InfoDisplaySettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334262C61668700062F9D /* InfoDisplaySettingsViewModel.swift */; };
 		DD5334292C6166A500062F9D /* InfoDisplaySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334282C6166A500062F9D /* InfoDisplaySettingsView.swift */; };
 		DD5334B02D1447C500CDD6EA /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334AF2D1447C500CDD6EA /* BLEManager.swift */; };
@@ -487,6 +489,8 @@
 		DD50C7542D0862770057AE6F /* ContactImageUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactImageUpdater.swift; sourceTree = "<group>"; };
 		DD5334202C60EBEE00062F9D /* InsulinCartridgeChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsulinCartridgeChange.swift; sourceTree = "<group>"; };
 		DD5334222C60ED3600062F9D /* IAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAge.swift; sourceTree = "<group>"; };
+		1DD895B618765CFE21EC2DB5 /* BAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BAge.swift; sourceTree = "<group>"; };
+		C18528967505C7AB03B34B31 /* PumpBatteryChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpBatteryChange.swift; sourceTree = "<group>"; };
 		DD5334262C61668700062F9D /* InfoDisplaySettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoDisplaySettingsViewModel.swift; sourceTree = "<group>"; };
 		DD5334282C6166A500062F9D /* InfoDisplaySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoDisplaySettingsView.swift; sourceTree = "<group>"; };
 		DD5334AF2D1447C500CDD6EA /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
@@ -971,6 +975,7 @@
 				DD608A092C23593900F91132 /* SMB.swift */,
 				DDD10F0A2C54192A00D76A8E /* TemporaryTarget.swift */,
 				DD5334202C60EBEE00062F9D /* InsulinCartridgeChange.swift */,
+				C18528967505C7AB03B34B31 /* PumpBatteryChange.swift */,
 			);
 			path = Treatments;
 			sourceTree = "<group>";
@@ -1010,6 +1015,7 @@
 				DD0C0C5F2C415B9D00DBADDF /* ProfileManager.swift */,
 				DD0C0C612C4175FD00DBADDF /* NSProfile.swift */,
 				DD5334222C60ED3600062F9D /* IAge.swift */,
+				1DD895B618765CFE21EC2DB5 /* BAge.swift */,
 			);
 			path = Nightscout;
 			sourceTree = "<group>";
@@ -2098,6 +2104,8 @@
 				FCE537BC249A4D7D00F80BF8 /* carbBolusArrays.swift in Sources */,
 				DD8316462DE49B09004467AA /* GraphSettingsView.swift in Sources */,
 				DD5334232C60ED3600062F9D /* IAge.swift in Sources */,
+				E59C252B991E7D0F1532AB10 /* BAge.swift in Sources */,
+				46D4837DBADA43F7668BBFF9 /* PumpBatteryChange.swift in Sources */,
 				FCD2A27D24C9D044009F7B7B /* Globals.swift in Sources */,
 				DD0C0C642C45A59400DBADDF /* HKUnit+Extensions.swift in Sources */,
 				DDC6CA412DD8CCCE0060EE25 /* SensorAgeAlarmEditor.swift in Sources */,
