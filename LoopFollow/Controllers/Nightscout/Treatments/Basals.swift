@@ -158,7 +158,7 @@ extension MainViewController {
     }
 
     // Extract suspend and resume events from temp basal data
-    // A temp basal with rate = 0 indicates pump suspension
+    // Look for temp basals with "suspend" in the reason field
     func extractSuspendResumeFromBasals(entries: [[String: AnyObject]]) {
         suspendGraphData.removeAll()
         resumeGraphData.removeAll()
@@ -180,51 +180,39 @@ extension MainViewController {
 
         for i in 0 ..< sortedEntries.count {
             guard let currentEntry = sortedEntries[i] as [String: AnyObject]?,
-                  let basalRate = currentEntry["absolute"] as? Double,
                   let dateStr = currentEntry["timestamp"] as? String ?? currentEntry["created_at"] as? String,
                   let parsedDate = NightscoutUtils.parseDate(dateStr) else {
+                continue
+            }
+
+            // Check if this temp basal has "suspend" in the reason field
+            let reason = currentEntry["reason"] as? String ?? ""
+            guard reason.lowercased().contains("suspend") else {
                 continue
             }
 
             let dateTimeStamp = parsedDate.timeIntervalSince1970
             let duration = currentEntry["duration"] as? Double ?? 0.0
 
-            // Detect suspension: basal rate is 0 or very close to 0
-            if basalRate <= 0.001 {
-                // This is a suspend event - add to suspend graph data
-                let sgv = findNearestBGbyTime(needle: dateTimeStamp, haystack: bgData, startingIndex: lastFoundIndex)
-                lastFoundIndex = sgv.foundIndex
+            // This is a suspend event - add to suspend graph data
+            let sgv = findNearestBGbyTime(needle: dateTimeStamp, haystack: bgData, startingIndex: lastFoundIndex)
+            lastFoundIndex = sgv.foundIndex
 
-                if dateTimeStamp < (dateTimeUtils.getNowTimeIntervalUTC() + (60 * 60)) {
-                    let suspendDot = DataStructs.timestampOnlyStruct(date: Double(dateTimeStamp), sgv: Int(sgv.sgv))
-                    suspendGraphData.append(suspendDot)
-                }
+            if dateTimeStamp < (dateTimeUtils.getNowTimeIntervalUTC() + (60 * 60)) {
+                let suspendDot = DataStructs.timestampOnlyStruct(date: Double(dateTimeStamp), sgv: Int(sgv.sgv))
+                suspendGraphData.append(suspendDot)
+            }
 
-                // Calculate resume time
-                var resumeTime: TimeInterval
+            // Calculate resume time (when suspension duration expires)
+            let resumeTime = dateTimeStamp + (duration * 60)
 
-                // Check if there's a next entry with non-zero rate
-                if i + 1 < sortedEntries.count,
-                   let nextEntry = sortedEntries[i + 1] as [String: AnyObject]?,
-                   let nextRate = nextEntry["absolute"] as? Double,
-                   nextRate > 0.001,
-                   let nextDateStr = nextEntry["timestamp"] as? String ?? nextEntry["created_at"] as? String,
-                   let nextDate = NightscoutUtils.parseDate(nextDateStr) {
-                    // Resume happens when next non-zero basal starts
-                    resumeTime = nextDate.timeIntervalSince1970
-                } else {
-                    // Resume happens when duration expires
-                    resumeTime = dateTimeStamp + (duration * 60)
-                }
+            // Add resume event if it's in the visible time range
+            if resumeTime < (dateTimeUtils.getNowTimeIntervalUTC() + (60 * 60)) {
+                let resumeSgv = findNearestBGbyTime(needle: resumeTime, haystack: bgData, startingIndex: lastFoundIndex)
+                lastFoundIndex = resumeSgv.foundIndex
 
-                // Add resume event if it's in the visible time range
-                if resumeTime < (dateTimeUtils.getNowTimeIntervalUTC() + (60 * 60)) {
-                    let resumeSgv = findNearestBGbyTime(needle: resumeTime, haystack: bgData, startingIndex: lastFoundIndex)
-                    lastFoundIndex = resumeSgv.foundIndex
-
-                    let resumeDot = DataStructs.timestampOnlyStruct(date: Double(resumeTime), sgv: Int(resumeSgv.sgv))
-                    resumeGraphData.append(resumeDot)
-                }
+                let resumeDot = DataStructs.timestampOnlyStruct(date: Double(resumeTime), sgv: Int(resumeSgv.sgv))
+                resumeGraphData.append(resumeDot)
             }
         }
 
