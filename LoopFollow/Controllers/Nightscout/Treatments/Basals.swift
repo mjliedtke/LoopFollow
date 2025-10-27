@@ -149,12 +149,8 @@ extension MainViewController {
         infoManager.updateInfoData(type: .basal, value: latestBasal)
 
         // Extract suspend/resume events from temp basals
-        // Only do this if no explicit suspend/resume events were found in treatments
-        // This allows the code to work with both explicit "Suspend Pump" events
-        // and implicit suspend events (0-rate temp basals)
-        if suspendGraphData.isEmpty && resumeGraphData.isEmpty {
-            extractSuspendResumeFromBasals(entries: entries)
-        }
+        // Look for temp basals with reason="suspend"
+        extractSuspendResumeFromBasals(entries: entries)
     }
 
     // Extract suspend and resume events from temp basal data
@@ -187,7 +183,7 @@ extension MainViewController {
 
             // Check if this temp basal has "suspend" in the reason field
             let reason = currentEntry["reason"] as? String ?? ""
-            guard reason.lowercased().contains("suspend") else {
+            guard !reason.isEmpty && reason.lowercased().contains("suspend") else {
                 continue
             }
 
