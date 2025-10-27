@@ -5,7 +5,17 @@ import Foundation
 
 extension MainViewController {
     // NS Resume Pump Response Processor
+    // This processes explicit "Resume Pump" treatment entries
+    // If no explicit entries exist, temp basal detection handles it instead
     func processResumePump(entries: [[String: AnyObject]]) {
+        // Only process if we have explicit resume pump entries
+        // Otherwise, leave the data from temp basal detection intact
+        guard !entries.isEmpty else {
+            print("⏩ processResumePump: No explicit resume entries, keeping temp basal detections")
+            return
+        }
+
+        print("🔍 processResumePump: Processing \(entries.count) explicit resume entries")
         resumeGraphData.removeAll()
 
         var lastFoundIndex = 0
