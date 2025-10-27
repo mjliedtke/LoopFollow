@@ -397,19 +397,18 @@ extension MainViewController {
         lineBGCheck.valueFormatter = ChartYDataValueFormatter()
         lineBGCheck.drawValuesEnabled = false
 
-        // Suspend Pump
+        // Suspend Pump - displayed as a red bar
         let chartEntrySuspend = [ChartDataEntry]()
         let lineSuspend = LineChartDataSet(entries: chartEntrySuspend, label: "")
-        lineSuspend.circleRadius = CGFloat(globalVariables.dotOther)
-        lineSuspend.circleColors = [NSUIColor.systemTeal.withAlphaComponent(0.75)]
-        lineSuspend.drawCircleHoleEnabled = false
         lineSuspend.setDrawHighlightIndicators(false)
-        lineSuspend.setColor(NSUIColor.systemGray2, alpha: 1.0)
-        lineSuspend.drawCirclesEnabled = true
         lineSuspend.lineWidth = 0
-        lineSuspend.highlightEnabled = true
+        lineSuspend.drawFilledEnabled = true
+        lineSuspend.fillFormatter = OverrideFillFormatter()
+        lineSuspend.fillColor = NSUIColor.systemRed
+        lineSuspend.fillAlpha = 0.6
+        lineSuspend.drawCirclesEnabled = false
         lineSuspend.axisDependency = YAxis.AxisDependency.right
-        lineSuspend.valueFormatter = ChartYDataValueFormatter()
+        lineSuspend.highlightEnabled = true
         lineSuspend.drawValuesEnabled = false
 
         // Resume Pump
@@ -1205,18 +1204,54 @@ extension MainViewController {
 
     func updateSuspendGraph() {
         var dataIndex = 8
-        BGChart.lineData?.dataSets[dataIndex].clear()
-        BGChartFull.lineData?.dataSets[dataIndex].clear()
-        let thisData = suspendGraphData
-        for i in 0 ..< thisData.count {
-            // skip if outside of visible area
-            let graphHours = 24 * Storage.shared.downloadDays.value
-            if thisData[i].date < dateTimeUtils.getTimeIntervalNHoursAgo(N: graphHours) { continue }
+        var yTop = Double(calculateMaxBgGraphValue() - 30)
+        var yBottom = Double(calculateMaxBgGraphValue() - 50)
+        var chart = BGChart.lineData!.dataSets[dataIndex] as! LineChartDataSet
+        var smallChart = BGChartFull.lineData!.dataSets[dataIndex] as! LineChartDataSet
+        chart.clear()
+        smallChart.clear()
 
-            let value = ChartDataEntry(x: Double(thisData[i].date), y: Double(thisData[i].sgv), data: formatPillText(line1: "Suspend Pump", time: thisData[i].date))
-            BGChart.data?.dataSets[dataIndex].addEntry(value)
+        // Match suspend and resume data to create bars
+        for i in 0 ..< suspendGraphData.count {
+            let suspendTime = suspendGraphData[i].date
+
+            // Find matching resume time
+            guard i < resumeGraphData.count else { continue }
+            let resumeTime = resumeGraphData[i].date
+
+            // Skip if outside of visible area
+            let graphHours = 24 * Storage.shared.downloadDays.value
+            if suspendTime < dateTimeUtils.getTimeIntervalNHoursAgo(N: graphHours) { continue }
+
+            let labelText = formatPillText(line1: "Pump Suspended", time: suspendTime)
+
+            // Create bar with 4 points (like override)
+            // Pre-start dot (bottom left)
+            let preStartDot = ChartDataEntry(x: Double(suspendTime), y: yBottom, data: labelText)
+            BGChart.data?.dataSets[dataIndex].addEntry(preStartDot)
             if Storage.shared.smallGraphTreatments.value {
-                BGChartFull.data?.dataSets[dataIndex].addEntry(value)
+                BGChartFull.data?.dataSets[dataIndex].addEntry(preStartDot)
+            }
+
+            // Start dot (top left)
+            let startDot = ChartDataEntry(x: Double(suspendTime + 1), y: yTop, data: labelText)
+            BGChart.data?.dataSets[dataIndex].addEntry(startDot)
+            if Storage.shared.smallGraphTreatments.value {
+                BGChartFull.data?.dataSets[dataIndex].addEntry(startDot)
+            }
+
+            // End dot (top right)
+            let endDot = ChartDataEntry(x: Double(resumeTime - 2), y: yTop, data: labelText)
+            BGChart.data?.dataSets[dataIndex].addEntry(endDot)
+            if Storage.shared.smallGraphTreatments.value {
+                BGChartFull.data?.dataSets[dataIndex].addEntry(endDot)
+            }
+
+            // Post-end dot (bottom right)
+            let postEndDot = ChartDataEntry(x: Double(resumeTime - 1), y: yBottom, data: labelText)
+            BGChart.data?.dataSets[dataIndex].addEntry(postEndDot)
+            if Storage.shared.smallGraphTreatments.value {
+                BGChartFull.data?.dataSets[dataIndex].addEntry(postEndDot)
             }
         }
 
@@ -1231,30 +1266,11 @@ extension MainViewController {
     }
 
     func updateResumeGraph() {
+        // Resume is now displayed as part of the suspend bar (dataset 8)
+        // This function is kept for compatibility but does nothing
         var dataIndex = 9
         BGChart.lineData?.dataSets[dataIndex].clear()
         BGChartFull.lineData?.dataSets[dataIndex].clear()
-        let thisData = resumeGraphData
-        for i in 0 ..< thisData.count {
-            // skip if outside of visible area
-            let graphHours = 24 * Storage.shared.downloadDays.value
-            if thisData[i].date < dateTimeUtils.getTimeIntervalNHoursAgo(N: graphHours) { continue }
-
-            let value = ChartDataEntry(x: Double(thisData[i].date), y: Double(thisData[i].sgv), data: formatPillText(line1: "Resume Pump", time: thisData[i].date))
-            BGChart.data?.dataSets[dataIndex].addEntry(value)
-            if Storage.shared.smallGraphTreatments.value {
-                BGChartFull.data?.dataSets[dataIndex].addEntry(value)
-            }
-        }
-
-        BGChart.data?.dataSets[dataIndex].notifyDataSetChanged()
-        BGChart.data?.notifyDataChanged()
-        BGChart.notifyDataSetChanged()
-        if Storage.shared.smallGraphTreatments.value {
-            BGChartFull.data?.dataSets[dataIndex].notifyDataSetChanged()
-            BGChartFull.data?.notifyDataChanged()
-            BGChartFull.notifyDataSetChanged()
-        }
     }
 
     func updateSensorStart() {
@@ -1442,16 +1458,15 @@ extension MainViewController {
         // Suspend Pump
         var chartEntrySuspend = [ChartDataEntry]()
         let lineSuspend = LineChartDataSet(entries: chartEntrySuspend, label: "")
-        lineSuspend.circleRadius = 2
-        lineSuspend.circleColors = [NSUIColor.systemTeal.withAlphaComponent(0.75)]
-        lineSuspend.drawCircleHoleEnabled = false
         lineSuspend.setDrawHighlightIndicators(false)
-        lineSuspend.setColor(NSUIColor.systemGray2, alpha: 1.0)
-        lineSuspend.drawCirclesEnabled = true
         lineSuspend.lineWidth = 0
-        lineSuspend.highlightEnabled = false
+        lineSuspend.drawFilledEnabled = true
+        lineSuspend.fillFormatter = OverrideFillFormatter()
+        lineSuspend.fillColor = NSUIColor.systemRed
+        lineSuspend.fillAlpha = 0.6
+        lineSuspend.drawCirclesEnabled = false
         lineSuspend.axisDependency = YAxis.AxisDependency.right
-        lineSuspend.valueFormatter = ChartYDataValueFormatter()
+        lineSuspend.highlightEnabled = true
         lineSuspend.drawValuesEnabled = false
 
         // Resume Pump
