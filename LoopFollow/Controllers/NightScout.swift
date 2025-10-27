@@ -53,6 +53,9 @@ extension MainViewController {
     func clearOldTempBasal() {
         basalData.removeAll()
         updateBasalGraph()
+        // Also clear suspend/resume data since they're derived from temp basals
+        clearOldSuspend()
+        clearOldResume()
     }
 
     func clearOldBolus() {
