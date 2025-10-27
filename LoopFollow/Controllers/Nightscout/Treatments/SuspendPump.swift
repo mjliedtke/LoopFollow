@@ -11,11 +11,9 @@ extension MainViewController {
         // Only process if we have explicit suspend pump entries
         // Otherwise, leave the data from temp basal detection intact
         guard !entries.isEmpty else {
-            print("⏩ processSuspendPump: No explicit suspend entries, keeping temp basal detections")
             return
         }
 
-        print("🔍 processSuspendPump: Processing \(entries.count) explicit suspend entries")
         suspendGraphData.removeAll()
 
         var lastFoundIndex = 0
