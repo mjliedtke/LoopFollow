@@ -5,7 +5,17 @@ import Foundation
 
 extension MainViewController {
     // NS Suspend Pump Response Processor
+    // This processes explicit "Suspend Pump" treatment entries
+    // If no explicit entries exist, temp basal detection handles it instead
     func processSuspendPump(entries: [[String: AnyObject]]) {
+        // Only process if we have explicit suspend pump entries
+        // Otherwise, leave the data from temp basal detection intact
+        guard !entries.isEmpty else {
+            print("⏩ processSuspendPump: No explicit suspend entries, keeping temp basal detections")
+            return
+        }
+
+        print("🔍 processSuspendPump: Processing \(entries.count) explicit suspend entries")
         suspendGraphData.removeAll()
 
         var lastFoundIndex = 0
