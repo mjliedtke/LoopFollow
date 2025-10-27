@@ -1203,13 +1203,18 @@ extension MainViewController {
     }
 
     func updateSuspendGraph() {
+        print("🔍 updateSuspendGraph called")
         var dataIndex = 8
         var yTop = Double(calculateMaxBgGraphValue() - 30)
         var yBottom = Double(calculateMaxBgGraphValue() - 50)
+        print("🔍 yTop: \(yTop), yBottom: \(yBottom)")
         var chart = BGChart.lineData!.dataSets[dataIndex] as! LineChartDataSet
         var smallChart = BGChartFull.lineData!.dataSets[dataIndex] as! LineChartDataSet
         chart.clear()
         smallChart.clear()
+
+        print("🔍 suspendGraphData.count: \(suspendGraphData.count)")
+        print("🔍 resumeGraphData.count: \(resumeGraphData.count)")
 
         // Match suspend and resume data to create bars
         for i in 0 ..< suspendGraphData.count {
@@ -1217,15 +1222,20 @@ extension MainViewController {
 
             // Skip if outside of visible area
             let graphHours = 24 * Storage.shared.downloadDays.value
-            if suspendTime < dateTimeUtils.getTimeIntervalNHoursAgo(N: graphHours) { continue }
+            if suspendTime < dateTimeUtils.getTimeIntervalNHoursAgo(N: graphHours) {
+                print("⚠️ Skipping suspend at index \(i) - outside visible area")
+                continue
+            }
 
             // Find matching resume time, or use current time if still suspended
             var resumeTime: TimeInterval
             if i < resumeGraphData.count {
                 resumeTime = resumeGraphData[i].date
+                print("✅ Creating suspend bar #\(i) from \(suspendTime) to \(resumeTime)")
             } else {
                 // No resume yet - pump may still be suspended, show bar until now
                 resumeTime = dateTimeUtils.getNowTimeIntervalUTC()
+                print("✅ Creating suspend bar #\(i) from \(suspendTime) to NOW (\(resumeTime))")
             }
 
             let labelText = formatPillText(line1: "Pump Suspended", time: suspendTime)

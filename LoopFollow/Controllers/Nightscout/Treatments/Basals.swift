@@ -156,6 +156,7 @@ extension MainViewController {
     // Extract suspend and resume events from temp basal data
     // Look for temp basals with "suspend" in the reason field
     func extractSuspendResumeFromBasals(entries: [[String: AnyObject]]) {
+        print("🔍 extractSuspendResumeFromBasals: Processing \(entries.count) temp basal entries")
         suspendGraphData.removeAll()
         resumeGraphData.removeAll()
 
@@ -183,12 +184,18 @@ extension MainViewController {
 
             // Check if this temp basal has "suspend" in the reason field
             let reason = currentEntry["reason"] as? String ?? ""
+            if !reason.isEmpty {
+                print("🔍 Found temp basal with reason: '\(reason)'")
+            }
             guard !reason.isEmpty && reason.lowercased().contains("suspend") else {
                 continue
             }
 
+            print("✅ Found SUSPEND event at \(dateStr)")
+
             let dateTimeStamp = parsedDate.timeIntervalSince1970
             let duration = currentEntry["duration"] as? Double ?? 0.0
+            print("   Duration: \(duration) minutes")
 
             // This is a suspend event - add to suspend graph data
             let sgv = findNearestBGbyTime(needle: dateTimeStamp, haystack: bgData, startingIndex: lastFoundIndex)
@@ -197,6 +204,7 @@ extension MainViewController {
             if dateTimeStamp < (dateTimeUtils.getNowTimeIntervalUTC() + (60 * 60)) {
                 let suspendDot = DataStructs.timestampOnlyStruct(date: Double(dateTimeStamp), sgv: Int(sgv.sgv))
                 suspendGraphData.append(suspendDot)
+                print("   ✅ Added suspend to graph data")
             }
 
             // Calculate resume time (when suspension duration expires)
@@ -209,13 +217,21 @@ extension MainViewController {
 
                 let resumeDot = DataStructs.timestampOnlyStruct(date: Double(resumeTime), sgv: Int(resumeSgv.sgv))
                 resumeGraphData.append(resumeDot)
+                print("   ✅ Added resume to graph data")
             }
         }
 
+        print("🔍 Total suspend events found: \(suspendGraphData.count)")
+        print("🔍 Total resume events found: \(resumeGraphData.count)")
+        print("🔍 graphOtherTreatments setting: \(Storage.shared.graphOtherTreatments.value)")
+
         // Update graphs if the setting is enabled
         if Storage.shared.graphOtherTreatments.value {
+            print("🔍 Calling updateSuspendGraph()")
             updateSuspendGraph()
             updateResumeGraph()
+        } else {
+            print("⚠️ NOT updating graphs - graphOtherTreatments is disabled")
         }
     }
 }
