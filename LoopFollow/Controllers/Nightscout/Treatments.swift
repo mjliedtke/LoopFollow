@@ -157,18 +157,13 @@ extension MainViewController {
         }
         if suspendPump.count > 0 {
             processSuspendPump(entries: suspendPump)
-        } else {
-            if suspendGraphData.count > 0 {
-                clearOldSuspend()
-            }
         }
+        // Note: Don't clear suspend data here - temp basal detection may have populated it
+
         if resumePump.count > 0 {
             processResumePump(entries: resumePump)
-        } else {
-            if resumeGraphData.count > 0 {
-                clearOldResume()
-            }
         }
+        // Note: Don't clear resume data here - temp basal detection may have populated it
         processSage(entries: cgmSensorStart)
         if cgmSensorStart.count > 0 {
             processSensorStart(entries: cgmSensorStart)
