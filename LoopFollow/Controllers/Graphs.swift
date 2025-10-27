@@ -1215,13 +1215,18 @@ extension MainViewController {
         for i in 0 ..< suspendGraphData.count {
             let suspendTime = suspendGraphData[i].date
 
-            // Find matching resume time
-            guard i < resumeGraphData.count else { continue }
-            let resumeTime = resumeGraphData[i].date
-
             // Skip if outside of visible area
             let graphHours = 24 * Storage.shared.downloadDays.value
             if suspendTime < dateTimeUtils.getTimeIntervalNHoursAgo(N: graphHours) { continue }
+
+            // Find matching resume time, or use current time if still suspended
+            var resumeTime: TimeInterval
+            if i < resumeGraphData.count {
+                resumeTime = resumeGraphData[i].date
+            } else {
+                // No resume yet - pump may still be suspended, show bar until now
+                resumeTime = dateTimeUtils.getNowTimeIntervalUTC()
+            }
 
             let labelText = formatPillText(line1: "Pump Suspended", time: suspendTime)
 
