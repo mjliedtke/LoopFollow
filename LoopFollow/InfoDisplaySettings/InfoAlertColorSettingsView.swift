@@ -3,8 +3,8 @@
 
 import SwiftUI
 
-/// Lets the user color individual info-table rows yellow/red once they pass a
-/// configurable age (in days). Independent of alarms — no sound or notification
+/// Lets the user color individual info-table rows yellow/red once their value
+/// passes a configurable level. Independent of alarms — no sound or notification
 /// is involved, only the text color of the row changes.
 struct InfoAlertColorSettingsView: View {
     @ObservedObject private var store = Storage.shared.infoAlertThresholds
@@ -14,7 +14,7 @@ struct InfoAlertColorSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Text("Color an information-table row yellow or red once it passes the configured age. This only changes the text color — it does not play an alarm sound or send a notification.")
+                Text("Color an information-table row yellow or red once its value passes the configured level. This only changes the text color — it does not play an alarm sound or send a notification.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -33,42 +33,54 @@ struct InfoAlertColorSettingsView: View {
 
     @ViewBuilder
     private func section(for type: InfoType) -> some View {
-        let threshold = binding(for: type)
-        let isEnabled = threshold.wrappedValue.isEnabled
+        if let config = type.alertColorConfig {
+            let threshold = binding(for: type)
+            let isEnabled = threshold.wrappedValue.isEnabled
+            let verb = config.direction == .fallingIsWorse ? "below" : "at"
 
-        Section(
-            header: Text(type.name),
-            footer: isEnabled
-                ? Text("Yellow shows first; red takes over at the higher age.")
-                : nil
-        ) {
-            Toggle("Color this row", isOn: Binding(
-                get: { threshold.wrappedValue.isEnabled },
-                set: { isOn in
-                    var updated = threshold.wrappedValue
-                    updated.isEnabled = isOn
-                    if isOn {
-                        if updated.warningDays == nil { updated.warningDays = 14 }
-                        if updated.urgentDays == nil { updated.urgentDays = 21 }
-                    }
-                    threshold.wrappedValue = updated
+            Section(
+                header: Text(type.name),
+                footer: isEnabled ? Text(footerText(for: config)) : nil
+            ) {
+                Toggle("Color this row", isOn: enabledBinding(threshold, config: config))
+
+                if isEnabled {
+                    Stepper(
+                        "Yellow \(verb) \(format(threshold.wrappedValue.warningValue ?? config.defaultWarning, config: config))",
+                        value: valueBinding(threshold, keyPath: \.warningValue, default: config.defaultWarning),
+                        in: config.range,
+                        step: config.step
+                    )
+                    Stepper(
+                        "Red \(verb) \(format(threshold.wrappedValue.urgentValue ?? config.defaultUrgent, config: config))",
+                        value: valueBinding(threshold, keyPath: \.urgentValue, default: config.defaultUrgent),
+                        in: config.range,
+                        step: config.step
+                    )
                 }
-            ))
-
-            if isEnabled {
-                Stepper(
-                    "Yellow at \(Int(threshold.wrappedValue.warningDays ?? 14)) days",
-                    value: dayBinding(threshold, keyPath: \.warningDays, default: 14),
-                    in: 1 ... 60
-                )
-                Stepper(
-                    "Red at \(Int(threshold.wrappedValue.urgentDays ?? 21)) days",
-                    value: dayBinding(threshold, keyPath: \.urgentDays, default: 21),
-                    in: 1 ... 60
-                )
             }
         }
     }
+
+    // MARK: - Formatting
+
+    private func format(_ value: Double, config: InfoAlertColorConfig) -> String {
+        let number = config.step.truncatingRemainder(dividingBy: 1) == 0
+            ? String(Int(value))
+            : String(format: "%.1f", value)
+        return "\(number) \(config.unitLabel)"
+    }
+
+    private func footerText(for config: InfoAlertColorConfig) -> String {
+        switch config.direction {
+        case .risingIsWorse:
+            return "Yellow shows first; red takes over at the higher value."
+        case .fallingIsWorse:
+            return "Yellow shows first; red takes over at the lower value."
+        }
+    }
+
+    // MARK: - Bindings
 
     private func binding(for type: InfoType) -> Binding<InfoAlertThreshold> {
         Binding(
@@ -77,7 +89,22 @@ struct InfoAlertColorSettingsView: View {
         )
     }
 
-    private func dayBinding(
+    private func enabledBinding(_ threshold: Binding<InfoAlertThreshold>, config: InfoAlertColorConfig) -> Binding<Bool> {
+        Binding(
+            get: { threshold.wrappedValue.isEnabled },
+            set: { isOn in
+                var updated = threshold.wrappedValue
+                updated.isEnabled = isOn
+                if isOn {
+                    if updated.warningValue == nil { updated.warningValue = config.defaultWarning }
+                    if updated.urgentValue == nil { updated.urgentValue = config.defaultUrgent }
+                }
+                threshold.wrappedValue = updated
+            }
+        )
+    }
+
+    private func valueBinding(
         _ threshold: Binding<InfoAlertThreshold>,
         keyPath: WritableKeyPath<InfoAlertThreshold, Double?>,
         default def: Double

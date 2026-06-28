@@ -71,11 +71,12 @@ class InfoManager: ObservableObject {
         objectWillChange.send()
     }
 
-    /// Computes and applies the severity for an age-based item from the configured
-    /// yellow/red day thresholds. No-op effect (normal) when not configured.
-    func updateInfoSeverity(type: InfoType, days: Double) {
+    /// Computes and applies the severity for an item from its configured
+    /// yellow/red thresholds and direction. No-op (normal) when not configured.
+    func updateInfoSeverity(type: InfoType, value: Double) {
+        guard let config = type.alertColorConfig else { return }
         let threshold = Storage.shared.infoAlertThresholds.value[String(type.rawValue)] ?? InfoAlertThreshold()
-        setSeverity(type: type, severity: InfoAlertEvaluator.severity(forDays: days, threshold: threshold))
+        setSeverity(type: type, severity: InfoAlertEvaluator.severity(forValue: value, threshold: threshold, direction: config.direction))
     }
 
     var visibleRows: [InfoData] {
