@@ -151,6 +151,7 @@
 		DD5334232C60ED3600062F9D /* IAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334222C60ED3600062F9D /* IAge.swift */; };
 		DD5334272C61668800062F9D /* InfoDisplaySettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334262C61668700062F9D /* InfoDisplaySettingsViewModel.swift */; };
 		DD5334292C6166A500062F9D /* InfoDisplaySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334282C6166A500062F9D /* InfoDisplaySettingsView.swift */; };
+		DDBA6E0000000000000000D2 /* InfoAlertColorSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6E0000000000000000D1 /* InfoAlertColorSettingsView.swift */; };
 		DD5334B02D1447C500CDD6EA /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5334AF2D1447C500CDD6EA /* BLEManager.swift */; };
 		DD5817172D2710E90041FB98 /* BLEDeviceSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5817162D2710E50041FB98 /* BLEDeviceSelectionView.swift */; };
 		DD58171A2D299EF80041FB98 /* DexcomHeartbeatBluetoothDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5817192D299EF40041FB98 /* DexcomHeartbeatBluetoothDevice.swift */; };
@@ -621,6 +622,7 @@
 		DD5334222C60ED3600062F9D /* IAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAge.swift; sourceTree = "<group>"; };
 		DD5334262C61668700062F9D /* InfoDisplaySettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoDisplaySettingsViewModel.swift; sourceTree = "<group>"; };
 		DD5334282C6166A500062F9D /* InfoDisplaySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoDisplaySettingsView.swift; sourceTree = "<group>"; };
+		DDBA6E0000000000000000D1 /* InfoAlertColorSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlertColorSettingsView.swift; sourceTree = "<group>"; };
 		DD5334AF2D1447C500CDD6EA /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		DD5817162D2710E50041FB98 /* BLEDeviceSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceSelectionView.swift; sourceTree = "<group>"; };
 		DD5817192D299EF40041FB98 /* DexcomHeartbeatBluetoothDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DexcomHeartbeatBluetoothDevice.swift; sourceTree = "<group>"; };
@@ -1197,6 +1199,7 @@
 			children = (
 				DD5334262C61668700062F9D /* InfoDisplaySettingsViewModel.swift */,
 				DD5334282C6166A500062F9D /* InfoDisplaySettingsView.swift */,
+				DDBA6E0000000000000000D1 /* InfoAlertColorSettingsView.swift */,
 			);
 			path = InfoDisplaySettings;
 			sourceTree = "<group>";
@@ -2154,6 +2157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD5334292C6166A500062F9D /* InfoDisplaySettingsView.swift in Sources */,
+				DDBA6E0000000000000000D2 /* InfoAlertColorSettingsView.swift in Sources */,
 				DD48781E2C7DAF2F0048F05C /* PushNotificationManager.swift in Sources */,
 				DD0B9D582DE1F3B20090C337 /* AlarmType+canAcknowledge.swift in Sources */,
 				DD7F4BC52DD3CE0700D449E9 /* AlarmBGLimitSection.swift in Sources */,

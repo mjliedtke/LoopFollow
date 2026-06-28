@@ -206,6 +206,8 @@ class Storage {
 
     var infoSort = StorageValue<[Int]>(key: "infoSort", defaultValue: InfoType.allCases.map(\.sortOrder))
     var infoVisible = StorageValue<[Bool]>(key: "infoVisible", defaultValue: InfoType.allCases.map(\.defaultVisible))
+    // Yellow/red color thresholds for info-table items, keyed by InfoType raw value.
+    var infoAlertThresholds = StorageValue<[String: InfoAlertThreshold]>(key: "infoAlertThresholds", defaultValue: [:])
 
     var url = StorageValue<String>(key: "url", defaultValue: "")
     var device = StorageValue<String>(key: "device", defaultValue: "")
@@ -411,6 +413,7 @@ class Storage {
         units.reload()
         infoSort.reload()
         infoVisible.reload()
+        infoAlertThresholds.reload()
 
         url.reload()
         device.reload()

@@ -57,6 +57,7 @@ extension MainViewController {
             if let formattedDuration = formatter.string(from: secondsAgo) {
                 infoManager.updateInfoData(type: .bage, value: formattedDuration)
             }
+            infoManager.updateInfoSeverity(type: .bage, days: secondsAgo / 86400)
         }
     }
 }
