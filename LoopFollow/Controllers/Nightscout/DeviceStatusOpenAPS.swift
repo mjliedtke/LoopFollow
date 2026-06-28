@@ -68,6 +68,7 @@ extension MainViewController {
             // IOB
             if let iobMetric = InsulinMetric(from: lastLoopRecord["iob"], key: "iob") {
                 infoManager.updateInfoData(type: .iob, value: iobMetric)
+                infoManager.updateInfoSeverity(type: .iob, value: iobMetric.value)
                 latestIOB = iobMetric
                 Observable.shared.iobText.value = iobMetric.formattedValue()
             }
@@ -75,6 +76,7 @@ extension MainViewController {
             // COB
             if let cobMetric = CarbMetric(from: enactedOrSuggested, key: "COB") {
                 infoManager.updateInfoData(type: .cob, value: cobMetric)
+                infoManager.updateInfoSeverity(type: .cob, value: cobMetric.value)
                 latestCOB = cobMetric
             } else if let reasonString = enactedOrSuggested["reason"] as? String {
                 // Fallback: Extract COB from reason string
@@ -87,6 +89,7 @@ extension MainViewController {
                         let tempDict: [String: AnyObject] = ["COB": cobValue as AnyObject]
                         if let fallbackCobMetric = CarbMetric(from: tempDict, key: "COB") {
                             infoManager.updateInfoData(type: .cob, value: fallbackCobMetric)
+                            infoManager.updateInfoSeverity(type: .cob, value: fallbackCobMetric.value)
                             latestCOB = fallbackCobMetric
                         } else {
                             print("Failed to create CarbMetric from extracted COB value: \(cobValue)")
@@ -109,6 +112,7 @@ extension MainViewController {
             // Recommended Bolus
             if let rec = InsulinMetric(from: lastLoopRecord, key: "recommendedBolus") {
                 infoManager.updateInfoData(type: .recBolus, value: rec)
+                infoManager.updateInfoSeverity(type: .recBolus, value: rec.value)
                 Observable.shared.deviceRecBolus.value = rec.value
             } else {
                 Observable.shared.deviceRecBolus.value = nil

@@ -114,10 +114,12 @@ extension MainViewController {
                 if let reservoirData = lastPumpRecord["reservoir"] as? Double {
                     latestPumpVolume = reservoirData
                     infoManager.updateInfoData(type: .pump, value: String(format: "%.0f", reservoirData) + "U")
+                    infoManager.updateInfoSeverity(type: .pump, value: reservoirData)
                     Storage.shared.lastPumpReservoirU.value = reservoirData
                 } else {
                     latestPumpVolume = 50.0
                     infoManager.updateInfoData(type: .pump, value: "50+U")
+                    infoManager.updateInfoSeverity(type: .pump, value: 50.0)
                     Storage.shared.lastPumpReservoirU.value = nil
                 }
             }
@@ -127,6 +129,7 @@ extension MainViewController {
                let pumpBatteryPercent = pumpBatteryRecord["percent"] as? Double
             {
                 infoManager.updateInfoData(type: .pumpBattery, value: String(format: "%.0f", pumpBatteryPercent) + "%")
+                infoManager.updateInfoSeverity(type: .pumpBattery, value: pumpBatteryPercent)
                 Observable.shared.pumpBatteryLevel.value = pumpBatteryPercent
             }
 
@@ -140,6 +143,7 @@ extension MainViewController {
                     batteryText = String(format: "%.0f", upbat) + "%"
                 }
                 infoManager.updateInfoData(type: .battery, value: batteryText)
+                infoManager.updateInfoSeverity(type: .battery, value: upbat)
                 Observable.shared.deviceBatteryLevel.value = upbat
 
                 let timestamp = uploader["timestamp"] as? Date ?? Date()

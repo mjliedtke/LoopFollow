@@ -37,7 +37,7 @@ extension AlarmType {
             return (direction: .descending,
                     key: { $0.threshold })
 
-        case .sensorChange:
+        case .sensorChange, .batteryAge:
             return (direction: .ascending,
                     key: { $0.threshold })
 

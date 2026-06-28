@@ -13,20 +13,31 @@ struct InfoTableView: View {
     var body: some View {
         List {
             if let tz = timeZoneOverride {
-                row(name: "Time Zone", value: tz)
+                row(name: "Time Zone", value: tz, severity: .normal)
             }
             ForEach(infoManager.visibleRows) { item in
-                row(name: item.name, value: item.value)
+                row(name: item.name, value: item.value, severity: item.severity)
             }
         }
         .listStyle(.plain)
         .environment(\.defaultMinListRowHeight, rowHeight)
     }
 
-    private func row(name: String, value: String) -> some View {
+    /// Maps an alert severity to the value text color. Normal uses the default
+    /// primary color; warning/urgent match the app's yellow/red convention.
+    private func valueColor(for severity: InfoAlertSeverity) -> Color {
+        switch severity {
+        case .normal: return .primary
+        case .warning: return .yellow
+        case .urgent: return .red
+        }
+    }
+
+    private func row(name: String, value: String, severity: InfoAlertSeverity) -> some View {
         // Show a placeholder for any field that has no value yet,
         // so the row reads as "no data" rather than appearing empty.
         let displayValue = value.isEmpty ? "—" : value
+        let color = valueColor(for: severity)
 
         return ViewThatFits(in: .horizontal) {
             // Preferred: compact single line (label — value)
@@ -34,14 +45,14 @@ struct InfoTableView: View {
                 Text(name)
                 Spacer()
                 Text(displayValue)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(color)
             }
 
             // Fallback when the single line won't fit: label over value
             VStack(alignment: .leading, spacing: 0) {
                 Text(name)
                 Text(displayValue)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(color)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
         }

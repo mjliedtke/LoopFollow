@@ -16,6 +16,7 @@ struct AlarmData: Codable {
     let COB: Double?
     let sageInsertTime: TimeInterval?
     let pumpInsertTime: TimeInterval?
+    let bageInsertTime: TimeInterval?
     let latestPumpVolume: Double?
     let IOB: Double?
     let recentBoluses: [BolusEntry]

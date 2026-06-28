@@ -53,14 +53,30 @@ class InfoManager: ObservableObject {
 
     func clearInfoData(type: InfoType) {
         tableData[type.rawValue].value = ""
+        tableData[type.rawValue].severity = .normal
         objectWillChange.send()
     }
 
     func clearInfoData(types: [InfoType]) {
         for type in types {
             tableData[type.rawValue].value = ""
+            tableData[type.rawValue].severity = .normal
         }
         objectWillChange.send()
+    }
+
+    /// Sets the visual alert level (yellow/red) for an info-table row.
+    func setSeverity(type: InfoType, severity: InfoAlertSeverity) {
+        tableData[type.rawValue].severity = severity
+        objectWillChange.send()
+    }
+
+    /// Computes and applies the severity for an item from its configured
+    /// yellow/red thresholds and direction. No-op (normal) when not configured.
+    func updateInfoSeverity(type: InfoType, value: Double) {
+        guard let config = type.alertColorConfig else { return }
+        let threshold = Storage.shared.infoAlertThresholds.value[String(type.rawValue)] ?? InfoAlertThreshold()
+        setSeverity(type: type, severity: InfoAlertEvaluator.severity(forValue: value, threshold: threshold, direction: config.direction))
     }
 
     var visibleRows: [InfoData] {

@@ -23,6 +23,10 @@ struct SettingsMenuView: View {
                     NavigationRow(title: "Information Display",
                                   icon: "info.circle",
                                   value: SettingsRoute.infoDisplay)
+
+                    NavigationRow(title: "Information Table Alerts",
+                                  icon: "paintpalette",
+                                  value: SettingsRoute.infoAlerts)
                 }
 
                 NavigationRow(title: "Units and Metrics",
@@ -112,6 +116,7 @@ enum SettingsRoute: Hashable, Identifiable {
     case general, graph
     case tabSettings
     case infoDisplay
+    case infoAlerts
     case alarmSettings
     case apn
     #if !targetEnvironment(macCatalyst)
@@ -137,6 +142,7 @@ enum SettingsRoute: Hashable, Identifiable {
         case .graph: GraphSettingsView()
         case .tabSettings: TabCustomizationModal()
         case .infoDisplay: InfoDisplaySettingsView(viewModel: .init())
+        case .infoAlerts: InfoAlertColorSettingsView()
         case .alarmSettings: AlarmSettingsView()
         case .apn: APNSettingsView()
         #if !targetEnvironment(macCatalyst)

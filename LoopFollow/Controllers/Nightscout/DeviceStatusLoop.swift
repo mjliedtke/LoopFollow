@@ -54,6 +54,7 @@ extension MainViewController {
             // IOB
             if let insulinMetric = InsulinMetric(from: lastLoopRecord["iob"], key: "iob") {
                 infoManager.updateInfoData(type: .iob, value: insulinMetric)
+                infoManager.updateInfoSeverity(type: .iob, value: insulinMetric.value)
                 latestIOB = insulinMetric
                 Observable.shared.iobText.value = insulinMetric.formattedValue()
             }
@@ -61,6 +62,7 @@ extension MainViewController {
             // COB
             if let cobMetric = CarbMetric(from: lastLoopRecord["cob"], key: "cob") {
                 infoManager.updateInfoData(type: .cob, value: cobMetric)
+                infoManager.updateInfoSeverity(type: .cob, value: cobMetric.value)
                 latestCOB = cobMetric
             }
 
@@ -103,6 +105,7 @@ extension MainViewController {
             if let recBolus = lastLoopRecord["recommendedBolus"] as? Double {
                 let formattedRecBolus = String(format: "%.2fU", recBolus)
                 infoManager.updateInfoData(type: .recBolus, value: formattedRecBolus)
+                infoManager.updateInfoSeverity(type: .recBolus, value: recBolus)
                 Observable.shared.deviceRecBolus.value = recBolus
             }
             if let loopStatus = lastLoopRecord["recommendedTempBasal"] as? [String: AnyObject] {
