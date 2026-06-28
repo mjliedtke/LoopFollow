@@ -287,6 +287,7 @@
 		DDF6999B2C5AA32E0058A8D9 /* TempTargetPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF6999A2C5AA32E0058A8D9 /* TempTargetPreset.swift */; };
 		DDF6999E2C5AAA640058A8D9 /* ErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF6999D2C5AAA640058A8D9 /* ErrorMessageView.swift */; };
 		DDF9676E2AD08C6E00C5EB95 /* SiteChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF9676D2AD08C6E00C5EB95 /* SiteChange.swift */; };
+		DDBA6E0000000000000000E2 /* PumpBatteryChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6E0000000000000000E1 /* PumpBatteryChange.swift */; };
 		DDFD5C532CB167DA00D3FD68 /* TRCCommandType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFD5C522CB167DA00D3FD68 /* TRCCommandType.swift */; };
 		DDFF3D7F2D1414A200BF9D9E /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFF3D7E2D1414A200BF9D9E /* BLEDevice.swift */; };
 		DDFF3D852D14279B00BF9D9E /* BackgroundRefreshSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFF3D842D14279B00BF9D9E /* BackgroundRefreshSettingsView.swift */; };
@@ -760,6 +761,7 @@
 		DDF6999A2C5AA32E0058A8D9 /* TempTargetPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempTargetPreset.swift; sourceTree = "<group>"; };
 		DDF6999D2C5AAA640058A8D9 /* ErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageView.swift; sourceTree = "<group>"; };
 		DDF9676D2AD08C6E00C5EB95 /* SiteChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteChange.swift; sourceTree = "<group>"; };
+		DDBA6E0000000000000000E1 /* PumpBatteryChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpBatteryChange.swift; sourceTree = "<group>"; };
 		DDFD5C522CB167DA00D3FD68 /* TRCCommandType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRCCommandType.swift; sourceTree = "<group>"; };
 		DDFF3D7E2D1414A200BF9D9E /* BLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevice.swift; sourceTree = "<group>"; };
 		DDFF3D842D14279B00BF9D9E /* BackgroundRefreshSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshSettingsView.swift; sourceTree = "<group>"; };
@@ -1178,6 +1180,7 @@
 				DD608A092C23593900F91132 /* SMB.swift */,
 				DDD10F0A2C54192A00D76A8E /* TemporaryTarget.swift */,
 				DD5334202C60EBEE00062F9D /* InsulinCartridgeChange.swift */,
+				DDBA6E0000000000000000E1 /* PumpBatteryChange.swift */,
 			);
 			path = Treatments;
 			sourceTree = "<group>";
@@ -2334,6 +2337,7 @@
 				DDC6CA452DD8D8E60060EE25 /* PumpChangeCondition.swift in Sources */,
 				DD493ADB2ACF21A3009A6922 /* Bolus.swift in Sources */,
 				DDF9676E2AD08C6E00C5EB95 /* SiteChange.swift in Sources */,
+				DDBA6E0000000000000000E2 /* PumpBatteryChange.swift in Sources */,
 				DDCC3A542DDC5D62006F1C10 /* BatteryDropAlarmEditor.swift in Sources */,
 				DD13BC772C3FD64E0062313B /* InfoData.swift in Sources */,
 				DD13BC752C3FD6210062313B /* InfoType.swift in Sources */,
