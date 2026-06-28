@@ -61,6 +61,7 @@ class MainViewController: UIViewController, ChartViewDelegate, UNUserNotificatio
     var currentSage: sageData?
     var currentCage: cageData?
     var currentIage: iageData?
+    var currentBage: bageData?
 
     var backgroundTask = BackgroundTask()
 
@@ -595,6 +596,7 @@ class MainViewController: UIViewController, ChartViewDelegate, UNUserNotificatio
         currentCage = nil
         currentSage = nil
         currentIage = nil
+        currentBage = nil
     }
 
     override func viewWillAppear(_ animated: Bool) {

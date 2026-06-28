@@ -18,6 +18,10 @@ extension MainViewController {
         var created_at: String
     }
 
+    struct bageData: Codable {
+        var created_at: String
+    }
+
     // NS Basal Profile Struct
     struct basalProfileStruct: Codable {
         var value: Double

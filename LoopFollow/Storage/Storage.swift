@@ -175,6 +175,7 @@ class Storage {
 
     var cageInsertTime = StorageValue<TimeInterval>(key: "cageInsertTime", defaultValue: 0)
     var sageInsertTime = StorageValue<TimeInterval>(key: "sageInsertTime", defaultValue: 0)
+    var bageInsertTime = StorageValue<TimeInterval>(key: "bageInsertTime", defaultValue: 0)
 
     // MARK: - Version-info ---------------------------
 
@@ -395,6 +396,7 @@ class Storage {
 
         cageInsertTime.reload()
         sageInsertTime.reload()
+        bageInsertTime.reload()
 
         cachedForVersion.reload()
         latestVersion.reload()

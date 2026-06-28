@@ -16,7 +16,7 @@ extension AlarmType {
              .tempTargetEnd:
             return .minute
         case .battery, .batteryDrop, .sensorChange, .pumpChange, .cob, .iob,
-             .pump, .pumpBattery:
+             .pump, .pumpBattery, .batteryAge:
             return .hour
         case .temporary:
             return .none

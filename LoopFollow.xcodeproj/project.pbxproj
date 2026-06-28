@@ -225,6 +225,9 @@
 		DDC6CA3F2DD7C6340060EE25 /* TemporaryAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC6CA3E2DD7C6340060EE25 /* TemporaryAlarmEditor.swift */; };
 		DDC6CA412DD8CCCE0060EE25 /* SensorAgeAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC6CA402DD8CCCE0060EE25 /* SensorAgeAlarmEditor.swift */; };
 		DDC6CA432DD8CED20060EE25 /* SensorAgeCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC6CA422DD8CED20060EE25 /* SensorAgeCondition.swift */; };
+		DDBA6E0000000000000000A2 /* BAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6E0000000000000000A1 /* BAge.swift */; };
+		DDBA6E0000000000000000B2 /* BatteryAgeCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6E0000000000000000B1 /* BatteryAgeCondition.swift */; };
+		DDBA6E0000000000000000C2 /* BatteryAgeAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6E0000000000000000C1 /* BatteryAgeAlarmEditor.swift */; };
 		DDC6CA452DD8D8E60060EE25 /* PumpChangeCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC6CA442DD8D8E60060EE25 /* PumpChangeCondition.swift */; };
 		DDC6CA472DD8D9010060EE25 /* PumpChangeAlarmEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC6CA462DD8D9010060EE25 /* PumpChangeAlarmEditor.swift */; };
 		DDC6CA492DD8E47A0060EE25 /* PumpVolumeCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC6CA482DD8E47A0060EE25 /* PumpVolumeCondition.swift */; };
@@ -692,6 +695,9 @@
 		DDC6CA3E2DD7C6340060EE25 /* TemporaryAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryAlarmEditor.swift; sourceTree = "<group>"; };
 		DDC6CA402DD8CCCE0060EE25 /* SensorAgeAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorAgeAlarmEditor.swift; sourceTree = "<group>"; };
 		DDC6CA422DD8CED20060EE25 /* SensorAgeCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorAgeCondition.swift; sourceTree = "<group>"; };
+		DDBA6E0000000000000000A1 /* BAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BAge.swift; sourceTree = "<group>"; };
+		DDBA6E0000000000000000B1 /* BatteryAgeCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryAgeCondition.swift; sourceTree = "<group>"; };
+		DDBA6E0000000000000000C1 /* BatteryAgeAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryAgeAlarmEditor.swift; sourceTree = "<group>"; };
 		DDC6CA442DD8D8E60060EE25 /* PumpChangeCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpChangeCondition.swift; sourceTree = "<group>"; };
 		DDC6CA462DD8D9010060EE25 /* PumpChangeAlarmEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpChangeAlarmEditor.swift; sourceTree = "<group>"; };
 		DDC6CA482DD8E47A0060EE25 /* PumpVolumeCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpVolumeCondition.swift; sourceTree = "<group>"; };
@@ -1039,6 +1045,7 @@
 				DDB9FC7A2DDB573F00EFAA76 /* IOBCondition.swift */,
 				DDC6CA482DD8E47A0060EE25 /* PumpVolumeCondition.swift */,
 				DDC6CA442DD8D8E60060EE25 /* PumpChangeCondition.swift */,
+				DDBA6E0000000000000000B1 /* BatteryAgeCondition.swift */,
 				DDC6CA422DD8CED20060EE25 /* SensorAgeCondition.swift */,
 				DDC6CA3C2DD7C6090060EE25 /* TemporaryCondition.swift */,
 				DD7F4C1E2DD6648B00D449E9 /* FastRiseCondition.swift */,
@@ -1201,6 +1208,7 @@
 				DD493ADE2ACF22BB009A6922 /* SAge.swift */,
 				DD493AE02ACF22FE009A6922 /* Profile.swift */,
 				DD493AE22ACF2358009A6922 /* CAge.swift */,
+				DDBA6E0000000000000000A1 /* BAge.swift */,
 				DD493AE42ACF2383009A6922 /* Treatments.swift */,
 				DD493AE62ACF23CF009A6922 /* DeviceStatus.swift */,
 				DD493AE82ACF2445009A6922 /* BGData.swift */,
@@ -1306,6 +1314,7 @@
 				DDB9FC7C2DDB575300EFAA76 /* IOBAlarmEditor.swift */,
 				DDC6CA4A2DD8E4960060EE25 /* PumpVolumeAlarmEditor.swift */,
 				DDC6CA462DD8D9010060EE25 /* PumpChangeAlarmEditor.swift */,
+				DDBA6E0000000000000000C1 /* BatteryAgeAlarmEditor.swift */,
 				DDC6CA402DD8CCCE0060EE25 /* SensorAgeAlarmEditor.swift */,
 				DDC6CA3E2DD7C6340060EE25 /* TemporaryAlarmEditor.swift */,
 				DD7F4C202DD66BB100D449E9 /* FastRiseAlarmEditor.swift */,
@@ -2387,6 +2396,9 @@
 				DD0C0C682C48529400DBADDF /* Metric.swift in Sources */,
 				FCC6886D2489909D00A0279D /* AnyConvertible.swift in Sources */,
 				DDC6CA432DD8CED20060EE25 /* SensorAgeCondition.swift in Sources */,
+				DDBA6E0000000000000000A2 /* BAge.swift in Sources */,
+				DDBA6E0000000000000000B2 /* BatteryAgeCondition.swift in Sources */,
+				DDBA6E0000000000000000C2 /* BatteryAgeAlarmEditor.swift in Sources */,
 				DD7F4C212DD66BB200D449E9 /* FastRiseAlarmEditor.swift in Sources */,
 				DD0C0C662C46E54C00DBADDF /* InfoDataSeparator.swift in Sources */,
 				374A77A52F5BE17000E96858 /* AppGroupID.swift in Sources */,

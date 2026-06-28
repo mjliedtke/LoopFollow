@@ -55,6 +55,7 @@ extension MainViewController {
         var pumpSiteChange: [cageData] = []
         var cgmSensorStart: [sageData] = []
         var insulinCartridge: [iageData] = []
+        var pumpBatteryChange: [bageData] = []
 
         for entry in uniqueEntries {
             guard let eventType = entry["eventType"] as? String else {
@@ -103,6 +104,11 @@ extension MainViewController {
                 if let createdAt = entry["created_at"] as? String {
                     let newEntry = iageData(created_at: createdAt)
                     insulinCartridge.append(newEntry)
+                }
+            case "Pump Battery Change":
+                if let createdAt = entry["created_at"] as? String {
+                    let newEntry = bageData(created_at: createdAt)
+                    pumpBatteryChange.append(newEntry)
                 }
             default:
                 print("No Match: \(String(describing: entry))")
@@ -182,6 +188,8 @@ extension MainViewController {
         }
 
         processIage(entries: insulinCartridge)
+
+        processBage(entries: pumpBatteryChange)
 
         if note.count > 0 {
             processNotes(entries: note)
