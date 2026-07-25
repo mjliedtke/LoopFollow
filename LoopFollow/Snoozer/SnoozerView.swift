@@ -15,6 +15,8 @@ struct SnoozerView: View {
     @ObservedObject var bgStale = Observable.shared.bgStale
     @ObservedObject var bg = Observable.shared.bg
     @ObservedObject var snoozerEmoji = Storage.shared.snoozerEmoji
+    @ObservedObject var lastIOB = Storage.shared.lastIOB
+    @ObservedObject var lastCOB = Storage.shared.lastCOB
 
     @ObservedObject private var cfgStore = Storage.shared.alarmConfiguration
 
@@ -224,33 +226,64 @@ struct SnoozerView: View {
                     .padding(.bottom, 8)
             }
 
-            if snoozerEmoji.value {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    VStack(spacing: 4) {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                VStack(spacing: 4) {
+                    if snoozerEmoji.value {
                         Text(bgEmoji)
                             .font(.system(size: 128))
                             .minimumScaleFactor(0.5)
+                    }
 
-                        Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
-                            .font(.system(size: 70))
-                            .minimumScaleFactor(0.5)
-                            .foregroundColor(.white)
-                            .frame(height: 78)
-                    }
-                }
-            } else {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    VStack(spacing: 4) {
-                        Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
-                            .font(.system(size: 70))
-                            .minimumScaleFactor(0.5)
-                            .foregroundColor(.white)
-                            .frame(height: 78)
-                    }
+                    treatmentRow(isLandscape: isLandscape)
+
+                    Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
+                        .font(.system(size: 70))
+                        .minimumScaleFactor(0.5)
+                        .foregroundColor(.white)
+                        .frame(height: 78)
                 }
             }
             Spacer()
         }
+    }
+
+    // MARK: - IOB / COB
+
+    /// IOB and COB shown just above the clock. Values come from the same store
+    /// the Live Activity reads, so they are populated by both the Loop and the
+    /// Trio/OpenAPS device-status paths.
+    private func treatmentRow(isLandscape: Bool) -> some View {
+        HStack(spacing: isLandscape ? 20 : 28) {
+            treatmentValue(label: "IOB", value: iobDisplay, isLandscape: isLandscape)
+            treatmentValue(label: "COB", value: cobDisplay, isLandscape: isLandscape)
+        }
+    }
+
+    private func treatmentValue(label: String, value: String, isLandscape: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(label)
+                .font(.system(size: isLandscape ? 24 : 30, weight: .semibold))
+                .foregroundColor(.white.opacity(0.5))
+
+            Text(value)
+                .font(.system(size: isLandscape ? 34 : 42, weight: .medium))
+                .foregroundColor(.white.opacity(0.9))
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
+    }
+
+    /// Mirrors `InsulinMetric.formattedValue()` — one decimal until 10 U.
+    private var iobDisplay: String {
+        guard let iob = lastIOB.value else { return "--" }
+        let decimals = abs(iob) >= 10 ? 0 : 1
+        return Localizer.formatToLocalizedString(iob, maxFractionDigits: decimals, minFractionDigits: 0) + " U"
+    }
+
+    /// Mirrors `CarbMetric` — whole grams.
+    private var cobDisplay: String {
+        guard let cob = lastCOB.value else { return "--" }
+        return Localizer.formatToLocalizedString(cob, maxFractionDigits: 0, minFractionDigits: 0) + " g"
     }
 
     private var bgEmoji: String {
