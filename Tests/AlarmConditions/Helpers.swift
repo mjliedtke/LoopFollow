@@ -22,6 +22,12 @@ extension Alarm {
         return alarm
     }
 
+    static func batteryAge(threshold: Double?) -> Self {
+        var alarm = Alarm(type: .batteryAge)
+        alarm.threshold = threshold
+        return alarm
+    }
+
     static func futureCarbs(threshold: Double = 45, delta: Double = 5) -> Self {
         var alarm = Alarm(type: .futureCarbs)
         alarm.threshold = threshold
@@ -62,6 +68,7 @@ extension AlarmData {
             COB: nil,
             sageInsertTime: nil,
             pumpInsertTime: nil,
+            bageInsertTime: nil,
             latestPumpVolume: nil,
             IOB: nil,
             recentBoluses: [],
@@ -88,6 +95,34 @@ extension AlarmData {
             COB: nil,
             sageInsertTime: insertTime,
             pumpInsertTime: nil,
+            bageInsertTime: nil,
+            latestPumpVolume: nil,
+            IOB: nil,
+            recentBoluses: [],
+            latestBattery: nil,
+            latestBatteryIsCharging: nil,
+            latestPumpBattery: nil,
+            batteryHistory: [],
+            recentCarbs: [],
+            dbSizePercentage: nil
+        )
+    }
+
+    static func withPumpBatteryInsertTime(_ insertTime: TimeInterval?) -> Self {
+        AlarmData(
+            bgReadings: [],
+            predictionData: [],
+            expireDate: nil,
+            lastLoopTime: nil,
+            latestOverrideStart: nil,
+            latestOverrideEnd: nil,
+            latestTempTargetStart: nil,
+            latestTempTargetEnd: nil,
+            recBolus: nil,
+            COB: nil,
+            sageInsertTime: nil,
+            pumpInsertTime: nil,
+            bageInsertTime: insertTime,
             latestPumpVolume: nil,
             IOB: nil,
             recentBoluses: [],
@@ -122,6 +157,7 @@ extension AlarmData {
             COB: nil,
             sageInsertTime: nil,
             pumpInsertTime: nil,
+            bageInsertTime: nil,
             latestPumpVolume: nil,
             IOB: nil,
             recentBoluses: [],
@@ -148,6 +184,7 @@ extension AlarmData {
             COB: nil,
             sageInsertTime: nil,
             pumpInsertTime: nil,
+            bageInsertTime: nil,
             latestPumpVolume: nil,
             IOB: nil,
             recentBoluses: [],
@@ -174,6 +211,7 @@ extension AlarmData {
             COB: nil,
             sageInsertTime: nil,
             pumpInsertTime: nil,
+            bageInsertTime: nil,
             latestPumpVolume: nil,
             IOB: nil,
             recentBoluses: [],

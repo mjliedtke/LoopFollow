@@ -58,6 +58,7 @@ class MainViewController: UIViewController, UNUserNotificationCenterDelegate {
     var currentSage: sageData?
     var currentCage: cageData?
     var currentIage: iageData?
+    var currentBage: bageData?
 
     var backgroundTask = BackgroundTask()
 
@@ -566,6 +567,7 @@ class MainViewController: UIViewController, UNUserNotificationCenterDelegate {
         currentCage = nil
         currentSage = nil
         currentIage = nil
+        currentBage = nil
     }
 
     override func viewWillAppear(_ animated: Bool) {
