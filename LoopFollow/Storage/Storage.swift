@@ -88,7 +88,9 @@ class Storage {
     /// Dim further once the screen has been untouched for `nightModeIdleDelay`.
     var nightModeIdleDim = StorageValue<Bool>(key: "nightModeIdleDim", defaultValue: false)
     var nightModeIdleDelay = StorageValue<Double>(key: "nightModeIdleDelay", defaultValue: 20)
-    var nightModeIdleDimLevel = StorageValue<Double>(key: "nightModeIdleDimLevel", defaultValue: 0.85)
+    /// Defaults to fully black — on OLED that means the pixels are off, which is
+    /// the point of the idle step for overnight nightstand use.
+    var nightModeIdleDimLevel = StorageValue<Double>(key: "nightModeIdleDimLevel", defaultValue: 1.0)
     /// Red text instead of white, to preserve dark adaptation.
     var nightModeRedText = StorageValue<Bool>(key: "nightModeRedText", defaultValue: false)
 

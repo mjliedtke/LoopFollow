@@ -209,12 +209,12 @@ struct GeneralSettingsView: View {
                 Text("\(Int(value.wrappedValue * 100))%")
                     .foregroundColor(.secondary)
             }
-            Slider(value: value, in: 0.1 ... 0.95, step: 0.05)
+            Slider(value: value, in: 0.1 ... 1.0, step: 0.05)
         }
     }
 
     private var nightModeFooter: String {
-        let base = "Dims the Snoozer screen for nightstand use. A firing alarm always shows at full brightness, and tapping the screen restores it."
+        let base = "Dims the Snoozer screen for nightstand use. At 100% the screen goes fully black; tap it to bring the reading back. A firing alarm always shows at full brightness."
         switch nightModeTrigger.value {
         case .off:
             return base
