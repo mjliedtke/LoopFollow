@@ -235,12 +235,13 @@ struct SnoozerView: View {
                     }
 
                     treatmentRow(isLandscape: isLandscape)
+                        .padding(.bottom, isLandscape ? 14 : 22)
 
                     Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
-                        .font(.system(size: 70))
+                        .font(.system(size: 82))
                         .minimumScaleFactor(0.5)
                         .foregroundColor(.white)
-                        .frame(height: 78)
+                        .frame(height: 92)
                 }
             }
             Spacer()
