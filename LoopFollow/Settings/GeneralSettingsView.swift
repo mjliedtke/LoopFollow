@@ -17,6 +17,16 @@ struct GeneralSettingsView: View {
     @ObservedObject var graphTimeZoneEnabled = Storage.shared.graphTimeZoneEnabled
     @ObservedObject var graphTimeZoneIdentifier = Storage.shared.graphTimeZoneIdentifier
 
+    // Snoozer night mode
+    @ObservedObject var nightModeTrigger = Storage.shared.nightModeTrigger
+    @ObservedObject var nightModeDim = Storage.shared.nightModeDim
+    @ObservedObject var nightModeDimLevel = Storage.shared.nightModeDimLevel
+    @ObservedObject var nightModeIdleDim = Storage.shared.nightModeIdleDim
+    @ObservedObject var nightModeIdleDelay = Storage.shared.nightModeIdleDelay
+    @ObservedObject var nightModeIdleDimLevel = Storage.shared.nightModeIdleDimLevel
+    @ObservedObject var nightModeRedText = Storage.shared.nightModeRedText
+    @ObservedObject var alarmConfiguration = Storage.shared.alarmConfiguration
+
     // Speak-BG settings
     @ObservedObject var speakBG = Storage.shared.speakBG
     @ObservedObject var speakBGAlways = Storage.shared.speakBGAlways
@@ -59,6 +69,43 @@ struct GeneralSettingsView: View {
 
                         window?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
                     }
+            }
+
+            Section {
+                Picker("Night Mode", selection: $nightModeTrigger.value.animation()) {
+                    ForEach(NightModeTrigger.allCases, id: \.self) { trigger in
+                        Text(trigger.displayName).tag(trigger)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                if nightModeTrigger.value != .off {
+                    Toggle("Dim Screen", isOn: $nightModeDim.value.animation())
+
+                    if nightModeDim.value {
+                        dimSlider("Dimness", value: $nightModeDimLevel.value)
+                    }
+
+                    Toggle("Dim When Idle", isOn: $nightModeIdleDim.value.animation())
+
+                    if nightModeIdleDim.value {
+                        Stepper(value: $nightModeIdleDelay.value, in: 5 ... 120, step: 5) {
+                            HStack {
+                                Text("Idle After")
+                                Spacer()
+                                Text("\(Int(nightModeIdleDelay.value)) sec")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        dimSlider("Idle Dimness", value: $nightModeIdleDimLevel.value)
+                    }
+
+                    Toggle("Red Night Colors", isOn: $nightModeRedText.value)
+                }
+            } header: {
+                Text("Night Mode")
+            } footer: {
+                Text(nightModeFooter)
             }
 
             Section("Time Zone") {
@@ -150,6 +197,44 @@ struct GeneralSettingsView: View {
 
     private func markChartSettingsDirty() {
         Observable.shared.chartSettingsChanged.value = true
+    }
+
+    // MARK: - Night mode helpers
+
+    private func dimSlider(_ title: String, value: Binding<Double>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(title)
+                Spacer()
+                Text("\(Int(value.wrappedValue * 100))%")
+                    .foregroundColor(.secondary)
+            }
+            Slider(value: value, in: 0.1 ... 0.95, step: 0.05)
+        }
+    }
+
+    private var nightModeFooter: String {
+        let base = "Dims the Snoozer screen for nightstand use. A firing alarm always shows at full brightness, and tapping the screen restores it."
+        switch nightModeTrigger.value {
+        case .off:
+            return base
+        case .always:
+            return base + " Always — night mode stays on regardless of the time."
+        case .scheduled:
+            let night = formatted(alarmConfiguration.value.nightStart)
+            let day = formatted(alarmConfiguration.value.dayStart)
+            return base + " Scheduled — active from \(night) to \(day), the same night hours your alarms use (change them in Alarms → Settings)."
+        }
+    }
+
+    private func formatted(_ time: TimeOfDay) -> String {
+        var components = DateComponents()
+        components.hour = time.hour
+        components.minute = time.minute
+        guard let date = Calendar.current.date(from: components) else {
+            return String(format: "%02d:%02d", time.hour, time.minute)
+        }
+        return date.formatted(date: .omitted, time: .shortened)
     }
 
     private static let sortedTimeZones: [TimeZone] = TimeZone.knownTimeZoneIdentifiers

@@ -77,6 +77,21 @@ class Storage {
     var snoozerEmoji = StorageValue<Bool>(key: "snoozerEmoji", defaultValue: false)
     var forcePortraitMode = StorageValue<Bool>(key: "forcePortraitMode", defaultValue: false)
 
+    // MARK: - Snoozer night mode ---------------------------
+
+    /// Whether night mode may engage at all, and on what basis.
+    var nightModeTrigger = StorageValue<NightModeTrigger>(key: "nightModeTrigger", defaultValue: .off)
+    /// Constant dimming while night mode is active.
+    var nightModeDim = StorageValue<Bool>(key: "nightModeDim", defaultValue: true)
+    /// How much black to lay over the Snoozer, 0 (none) … 0.95 (nearly opaque).
+    var nightModeDimLevel = StorageValue<Double>(key: "nightModeDimLevel", defaultValue: 0.5)
+    /// Dim further once the screen has been untouched for `nightModeIdleDelay`.
+    var nightModeIdleDim = StorageValue<Bool>(key: "nightModeIdleDim", defaultValue: false)
+    var nightModeIdleDelay = StorageValue<Double>(key: "nightModeIdleDelay", defaultValue: 20)
+    var nightModeIdleDimLevel = StorageValue<Double>(key: "nightModeIdleDimLevel", defaultValue: 0.85)
+    /// Red text instead of white, to preserve dark adaptation.
+    var nightModeRedText = StorageValue<Bool>(key: "nightModeRedText", defaultValue: false)
+
     var speakBG = StorageValue<Bool>(key: "speakBG", defaultValue: false)
     var speakBGAlways = StorageValue<Bool>(key: "speakBGAlways", defaultValue: true)
     var speakLowBG = StorageValue<Bool>(key: "speakLowBG", defaultValue: false)

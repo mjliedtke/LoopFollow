@@ -18,6 +18,15 @@ struct SnoozerView: View {
     @ObservedObject var lastIOB = Storage.shared.lastIOB
     @ObservedObject var lastCOB = Storage.shared.lastCOB
 
+    // Night mode
+    @ObservedObject var nightModeTrigger = Storage.shared.nightModeTrigger
+    @ObservedObject var nightModeDim = Storage.shared.nightModeDim
+    @ObservedObject var nightModeDimLevel = Storage.shared.nightModeDimLevel
+    @ObservedObject var nightModeIdleDim = Storage.shared.nightModeIdleDim
+    @ObservedObject var nightModeIdleDelay = Storage.shared.nightModeIdleDelay
+    @ObservedObject var nightModeIdleDimLevel = Storage.shared.nightModeIdleDimLevel
+    @ObservedObject var nightModeRedText = Storage.shared.nightModeRedText
+
     @ObservedObject private var cfgStore = Storage.shared.alarmConfiguration
 
     // Snoozer Bar state
@@ -27,9 +36,68 @@ struct SnoozerView: View {
     @State private var autoHideTask: DispatchWorkItem? = nil
     @State private var lastActiveState: Bool = false
 
+    // Night mode state
+    @State private var isNight: Bool = false
+    @State private var isIdle: Bool = false
+    @State private var idleDimTask: DispatchWorkItem? = nil
+
     private var isGlobalSnoozeActive: Bool {
         if let until = cfgStore.value.snoozeUntil { return until > Date() }
         return false
+    }
+
+    // MARK: - Night mode
+
+    private var isNightModeActive: Bool {
+        switch nightModeTrigger.value {
+        case .off: return false
+        case .always: return true
+        case .scheduled: return isNight
+        }
+    }
+
+    /// How much black to lay over the screen. A firing alarm always wins — the
+    /// screen must be fully readable when it matters most.
+    private var dimOpacity: Double {
+        guard isNightModeActive, vm.activeAlarm == nil else { return 0 }
+        if isIdle, nightModeIdleDim.value { return nightModeIdleDimLevel.value }
+        if nightModeDim.value { return nightModeDimLevel.value }
+        return 0
+    }
+
+    /// Red replaces white while the night palette is on, so the numbers stay
+    /// readable without spoiling dark adaptation.
+    private var nightTint: Color? {
+        (isNightModeActive && nightModeRedText.value) ? Color(red: 1.0, green: 0.27, blue: 0.22) : nil
+    }
+
+    private func snoozerText(_ opacity: Double = 1.0) -> Color {
+        (nightTint ?? .white).opacity(opacity)
+    }
+
+    /// The BG value keeps its range coloring unless the night palette overrides it.
+    private var bgColor: Color {
+        nightTint ?? bgTextColor.value
+    }
+
+    private func noteInteraction() {
+        if isIdle {
+            withAnimation(.easeInOut(duration: 0.25)) { isIdle = false }
+        }
+        scheduleIdleDim()
+    }
+
+    private func scheduleIdleDim() {
+        idleDimTask?.cancel()
+        idleDimTask = nil
+        guard isNightModeActive, nightModeIdleDim.value else { return }
+
+        let task = DispatchWorkItem {
+            guard self.isNightModeActive, self.nightModeIdleDim.value else { return }
+            withAnimation(.easeInOut(duration: 0.8)) { self.isIdle = true }
+        }
+        idleDimTask = task
+        DispatchQueue.main.asyncAfter(deadline: .now() + nightModeIdleDelay.value, execute: task)
     }
 
     var body: some View {
@@ -55,12 +123,26 @@ struct SnoozerView: View {
                     }
                 }
                 .contentShape(Rectangle())
-                .onTapGesture { presentSnoozerBar() }
+                .onTapGesture {
+                    presentSnoozerBar()
+                    noteInteraction()
+                }
                 .onAppear {
                     presentSnoozerBar()
                     lastActiveState = isGlobalSnoozeActive
+                    isNight = computeIsNight()
+                    noteInteraction()
                 }
+                .onDisappear { idleDimTask?.cancel() }
                 .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+                    // Crossing the day/night boundary while the screen is up has
+                    // to re-evaluate scheduled night mode.
+                    let night = computeIsNight()
+                    if isNight != night {
+                        isNight = night
+                        noteInteraction()
+                    }
+
                     let active = isGlobalSnoozeActive
                     if lastActiveState != active {
                         lastActiveState = active
@@ -152,6 +234,18 @@ struct SnoozerView: View {
             }
             .sheet(isPresented: $showDatePickerDate) { datePickerSheetDate() }
             .sheet(isPresented: $showDatePickerTime) { datePickerSheetTime() }
+            .overlay {
+                // Non-interactive so every tap still reaches the view underneath
+                // and wakes the screen back up.
+                Color.black
+                    .opacity(dimOpacity)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+                    .animation(.easeInOut(duration: 0.4), value: dimOpacity)
+            }
+            .onChange(of: nightModeTrigger.value) { _ in noteInteraction() }
+            .onChange(of: nightModeIdleDim.value) { _ in noteInteraction() }
+            .onChange(of: nightModeIdleDelay.value) { _ in noteInteraction() }
         }
     }
 
@@ -168,13 +262,13 @@ struct SnoozerView: View {
             if !isLandscape && showDisplayName.value {
                 Text(Bundle.main.displayName)
                     .font(.system(size: 50, weight: .bold))
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(snoozerText(0.9))
             }
 
             Text(bgText.value)
                 .font(.system(size: 300, weight: .black))
                 .minimumScaleFactor(0.5)
-                .foregroundColor(bgTextColor.value)
+                .foregroundColor(bgColor)
                 .strikethrough(
                     bgStale.value,
                     pattern: .solid,
@@ -190,26 +284,26 @@ struct SnoozerView: View {
                         .font(.system(size: 70))
                 }
                 .minimumScaleFactor(0.5)
-                .foregroundColor(.white)
+                .foregroundColor(snoozerText())
                 .frame(maxWidth: .infinity, maxHeight: dirMaxH)
             } else {
                 Text(directionText.value)
                     .font(.system(size: 110, weight: .black))
                     .minimumScaleFactor(0.5)
-                    .foregroundColor(.white)
+                    .foregroundColor(snoozerText())
                     .frame(maxWidth: .infinity, maxHeight: dirMaxH)
 
                 Text(deltaText.value)
                     .font(.system(size: 70))
                     .minimumScaleFactor(0.5)
-                    .foregroundColor(.white.opacity(0.8))
+                    .foregroundColor(snoozerText(0.8))
                     .frame(maxWidth: .infinity, maxHeight: deltaMaxH)
             }
 
             Text(minAgoText.value)
                 .font(.system(size: 60))
                 .minimumScaleFactor(0.5)
-                .foregroundColor(.white.opacity(0.6))
+                .foregroundColor(snoozerText(0.6))
                 .frame(maxWidth: .infinity, maxHeight: ageMaxH)
         }
         .padding(.top, topPad)
@@ -222,7 +316,7 @@ struct SnoozerView: View {
             if showDisplayName.value && isLandscape {
                 Text(Bundle.main.displayName)
                     .font(.system(size: 50, weight: .bold))
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(snoozerText(0.9))
                     .padding(.bottom, 8)
             }
 
@@ -240,7 +334,7 @@ struct SnoozerView: View {
                     Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
                         .font(.system(size: 82))
                         .minimumScaleFactor(0.5)
-                        .foregroundColor(.white)
+                        .foregroundColor(snoozerText())
                         .frame(height: 92)
                 }
             }
@@ -264,11 +358,11 @@ struct SnoozerView: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(label)
                 .font(.system(size: isLandscape ? 24 : 30, weight: .semibold))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(snoozerText(0.5))
 
             Text(value)
                 .font(.system(size: isLandscape ? 34 : 42, weight: .medium))
-                .foregroundColor(.white.opacity(0.9))
+                .foregroundColor(snoozerText(0.9))
         }
         .lineLimit(1)
         .minimumScaleFactor(0.5)
@@ -599,6 +693,12 @@ struct SnoozerView: View {
     }
 
     private func phaseIconName() -> String {
+        isNight ? "moon.fill" : "sun.max.fill"
+    }
+
+    /// Whether "now" falls in the night half of the configured day/night window.
+    /// Shared by the phase icon and by scheduled night mode.
+    private func computeIsNight() -> Bool {
         let now = Date()
         let cal = Calendar.current
         let comps = cal.dateComponents([.year, .month, .day], from: now)
@@ -611,15 +711,15 @@ struct SnoozerView: View {
         let dayStart = time(cfgStore.value.dayStart)
         let nightStart = time(cfgStore.value.nightStart)
 
-        let isNight: Bool
         if dayStart <= nightStart {
-            if now >= nightStart { isNight = true }
-            else if now >= dayStart { isNight = false } else { isNight = true }
+            if now >= nightStart { return true }
+            if now >= dayStart { return false }
+            return true
         } else { // crosses midnight
-            if now >= dayStart { isNight = false }
-            else if now >= nightStart { isNight = true } else { isNight = false }
+            if now >= dayStart { return false }
+            if now >= nightStart { return true }
+            return false
         }
-        return isNight ? "moon.fill" : "sun.max.fill"
     }
 
     // MARK: - Sheets
