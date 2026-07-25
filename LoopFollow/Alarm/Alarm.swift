@@ -357,6 +357,9 @@ struct Alarm: Identifiable, Codable, Equatable {
         case .pumpChange:
             soundFile = .wakeUpWillYou
             threshold = 12
+        case .batteryAge:
+            soundFile = .machineCharge
+            threshold = 30 // days
         case .pump:
             soundFile = .marimbaDescend
             threshold = 20
@@ -418,7 +421,7 @@ extension AlarmType {
         case .iob, .cob, .missedBolus, .futureCarbs, .recBolus:
             return .insulin
         case .battery, .batteryDrop, .pump, .pumpBattery, .pumpChange,
-             .sensorChange, .notLooping, .buildExpire, .dbSize:
+             .batteryAge, .sensorChange, .notLooping, .buildExpire, .dbSize:
             return .device
         case .overrideStart, .overrideEnd, .tempTargetStart, .tempTargetEnd:
             return .other
@@ -441,6 +444,7 @@ extension AlarmType {
         case .batteryDrop: return "battery.100.bolt"
         case .pump: return "drop"
         case .pumpBattery: return "powermeter"
+        case .batteryAge: return "battery.50"
         case .pumpChange: return "arrow.triangle.2.circlepath"
         case .sensorChange: return "sensor.tag.radiowaves.forward"
         case .notLooping: return "circle.slash"
@@ -470,6 +474,7 @@ extension AlarmType {
         case .batteryDrop: return "Battery drops quickly."
         case .pump: return "Reservoir level low."
         case .pumpBattery: return "Pump battery low."
+        case .batteryAge: return "Pump battery change due."
         case .pumpChange: return "Pump change due."
         case .sensorChange: return "Sensor change due."
         case .notLooping: return "Loop hasn’t completed."

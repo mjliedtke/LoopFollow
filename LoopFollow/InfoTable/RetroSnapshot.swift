@@ -237,6 +237,7 @@ extension MainViewController {
             (InfoType.sage, Storage.shared.sageInsertTime.value),
             (.cage, Storage.shared.cageInsertTime.value),
             (.iage, Storage.shared.iageInsertTime.value),
+            (.bage, Storage.shared.bageInsertTime.value),
         ] where insertTime > 0 && insertTime <= time {
             let age = time - insertTime
             set(type, Self.ageFormatter.string(from: age), age / 86400)

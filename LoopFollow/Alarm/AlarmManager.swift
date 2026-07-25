@@ -28,6 +28,7 @@ class AlarmManager {
             TemporaryCondition.self,
             SensorAgeCondition.self,
             PumpChangeCondition.self,
+            BatteryAgeCondition.self,
             PumpVolumeCondition.self,
             PumpBatteryCondition.self,
             IOBCondition.self,
