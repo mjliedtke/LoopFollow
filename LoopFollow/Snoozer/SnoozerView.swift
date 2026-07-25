@@ -283,7 +283,6 @@ struct SnoozerView: View {
                         .font(.system(size: 90, weight: .black))
                     Text(deltaText.value)
                         .font(.system(size: 70))
-                    priorDeltas(isLandscape: true)
                 }
                 .minimumScaleFactor(0.5)
                 .foregroundColor(snoozerText())
@@ -300,10 +299,10 @@ struct SnoozerView: View {
                     .minimumScaleFactor(0.5)
                     .foregroundColor(snoozerText(0.8))
                     .frame(maxWidth: .infinity, maxHeight: deltaMaxH)
-
-                priorDeltas(isLandscape: false)
-                    .frame(maxWidth: .infinity)
             }
+
+            priorDeltas(isLandscape: isLandscape)
+                .frame(maxWidth: .infinity)
 
             Text(minAgoText.value)
                 .font(.system(size: 60))
@@ -353,12 +352,12 @@ struct SnoozerView: View {
     @ViewBuilder
     private func priorDeltas(isLandscape: Bool) -> some View {
         if !priorDeltaTexts.value.isEmpty {
-            HStack(spacing: isLandscape ? 14 : 22) {
+            HStack(spacing: isLandscape ? 12 : 16) {
                 ForEach(Array(priorDeltaTexts.value.enumerated()), id: \.offset) { _, text in
                     Text(text)
                 }
             }
-            .font(.system(size: isLandscape ? 30 : 38))
+            .font(.system(size: isLandscape ? 26 : 34))
             .lineLimit(1)
             .minimumScaleFactor(0.5)
             .foregroundColor(snoozerText(0.45))
