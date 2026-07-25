@@ -12,6 +12,7 @@ struct SnoozerView: View {
     @ObservedObject var bgTextColor = Observable.shared.bgTextColor
     @ObservedObject var directionText = Observable.shared.directionText
     @ObservedObject var deltaText = Observable.shared.deltaText
+    @ObservedObject var priorDeltaTexts = Observable.shared.priorDeltaTexts
     @ObservedObject var bgStale = Observable.shared.bgStale
     @ObservedObject var bg = Observable.shared.bg
     @ObservedObject var snoozerEmoji = Storage.shared.snoozerEmoji
@@ -282,6 +283,7 @@ struct SnoozerView: View {
                         .font(.system(size: 90, weight: .black))
                     Text(deltaText.value)
                         .font(.system(size: 70))
+                    priorDeltas(isLandscape: true)
                 }
                 .minimumScaleFactor(0.5)
                 .foregroundColor(snoozerText())
@@ -298,6 +300,9 @@ struct SnoozerView: View {
                     .minimumScaleFactor(0.5)
                     .foregroundColor(snoozerText(0.8))
                     .frame(maxWidth: .infinity, maxHeight: deltaMaxH)
+
+                priorDeltas(isLandscape: false)
+                    .frame(maxWidth: .infinity)
             }
 
             Text(minAgoText.value)
@@ -339,6 +344,23 @@ struct SnoozerView: View {
                 }
             }
             Spacer()
+        }
+    }
+
+    /// The two deltas before the current one, most recent first, so the recent
+    /// trend is readable at a glance. Renders nothing until there is history.
+    @ViewBuilder
+    private func priorDeltas(isLandscape: Bool) -> some View {
+        if !priorDeltaTexts.value.isEmpty {
+            HStack(spacing: isLandscape ? 14 : 22) {
+                ForEach(Array(priorDeltaTexts.value.enumerated()), id: \.offset) { _, text in
+                    Text(text)
+                }
+            }
+            .font(.system(size: isLandscape ? 30 : 38))
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .foregroundColor(snoozerText(0.45))
         }
     }
 

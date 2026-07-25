@@ -27,6 +27,9 @@ class Observable {
     var bgTextColor = ObservableValue<Color>(default: .primary)
     var directionText = ObservableValue<String>(default: "-")
     var deltaText = ObservableValue<String>(default: "+0")
+    /// The deltas immediately before `deltaText`, most recent first, so a screen
+    /// can show how the last few readings moved rather than just the latest step.
+    var priorDeltaTexts = ObservableValue<[String]>(default: [])
     var iobText = ObservableValue<String>(default: "--")
 
     var serverText = ObservableValue<String>(default: "Server")

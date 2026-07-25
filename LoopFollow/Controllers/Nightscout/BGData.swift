@@ -258,6 +258,13 @@ extension MainViewController {
         viewUpdateNSBG(sourceName: sourceName)
     }
 
+    /// Formats a raw mg/dL delta for display, in the user's units, with an
+    /// explicit sign so a rise reads as "+5" rather than "5".
+    func formattedDelta(_ delta: Int) -> String {
+        let localized = Localizer.toDisplayUnits(String(delta))
+        return delta < 0 ? localized : "+" + localized
+    }
+
     func updateServerText(with serverText: String? = nil) {
         if Storage.shared.showDisplayName.value, let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String {
             Observable.shared.serverText.value = displayName
@@ -308,10 +315,15 @@ extension MainViewController {
             }
 
             // Delta handling
-            if deltaBG < 0 {
-                Observable.shared.deltaText.value = Localizer.toDisplayUnits(String(deltaBG))
-            } else {
-                Observable.shared.deltaText.value = "+" + Localizer.toDisplayUnits(String(deltaBG))
+            Observable.shared.deltaText.value = self.formattedDelta(deltaBG)
+
+            // The two deltas before the latest one, most recent first. Fewer are
+            // published when there is not enough history yet.
+            Observable.shared.priorDeltaTexts.value = (1 ... 2).compactMap { step in
+                let newer = latestEntryIndex - step
+                let older = newer - 1
+                guard older >= 0 else { return nil }
+                return self.formattedDelta(entries[newer].sgv - entries[older].sgv)
             }
 
             // Live Activity storage
