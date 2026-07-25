@@ -347,8 +347,9 @@ struct SnoozerView: View {
         }
     }
 
-    /// The two deltas before the current one, most recent first, so the recent
-    /// trend is readable at a glance. Renders nothing until there is history.
+    /// The two deltas before the current one, oldest to newest left to right,
+    /// matching how time runs on the graphs. Renders nothing until there is
+    /// history.
     @ViewBuilder
     private func priorDeltas(isLandscape: Bool) -> some View {
         if !priorDeltaTexts.value.isEmpty {

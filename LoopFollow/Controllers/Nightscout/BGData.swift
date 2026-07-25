@@ -317,9 +317,10 @@ extension MainViewController {
             // Delta handling
             Observable.shared.deltaText.value = self.formattedDelta(deltaBG)
 
-            // The two deltas before the latest one, most recent first. Fewer are
-            // published when there is not enough history yet.
-            Observable.shared.priorDeltaTexts.value = (1 ... 2).compactMap { step in
+            // The two deltas before the latest one, oldest first so a row of them
+            // reads left to right in time. Fewer are published when there is not
+            // enough history yet.
+            Observable.shared.priorDeltaTexts.value = (1 ... 2).reversed().compactMap { step in
                 let newer = latestEntryIndex - step
                 let older = newer - 1
                 guard older >= 0 else { return nil }
