@@ -73,6 +73,17 @@ struct SnoozerView: View {
         return 0
     }
 
+    /// The tab bar sits outside this view, so night mode cannot dim or tint it —
+    /// its white icons would stay at full daytime brightness all night. Hide it
+    /// while night mode is active instead, and let it come and go with the
+    /// snooze bar: any tap reveals both, the existing auto-hide takes both away.
+    /// A firing alarm always brings it back.
+    private var tabBarHidden: Bool {
+        isNightModeActive
+            && !(showSnoozerBar || isGlobalSnoozeActive)
+            && vm.activeAlarm == nil
+    }
+
     /// Red replaces white while the night palette is on, so the numbers stay
     /// readable without spoiling dark adaptation.
     private var nightTint: Color? {
@@ -261,6 +272,8 @@ struct SnoozerView: View {
             .onChange(of: nightModeTrigger.value) { _ in noteInteraction() }
             .onChange(of: nightModeIdleDim.value) { _ in noteInteraction() }
             .onChange(of: nightModeIdleDelay.value) { _ in noteInteraction() }
+            .toolbar(tabBarHidden ? .hidden : .visible, for: .tabBar)
+            .animation(.easeInOut(duration: 0.25), value: tabBarHidden)
         }
     }
 
