@@ -12,13 +12,17 @@ import SwiftUI
 /// flattened into a near-straight line.
 ///
 /// A limit marker is only pulled into frame once the readings come within
-/// `limitProximity` of it. Auto-fitting to in-range data normally leaves 70 and
-/// 180 outside the visible span entirely, where they cannot be drawn honestly;
-/// this keeps the full vertical range on a quiet night and brings the reference
-/// line in exactly when a drift starts to matter.
+/// `limitProximity` of it. Auto-fitting to in-range data normally leaves the
+/// limits outside the visible span entirely, where they cannot be drawn
+/// honestly; this keeps the full vertical range on a quiet night and brings the
+/// reference line in exactly when a drift starts to matter.
 struct TrendStrip: View {
     /// Readings in mg/dL, oldest first.
     let values: [Double]
+    /// Low and high limits in mg/dL. Passed in rather than read from settings
+    /// here so the view stays pure and the caller owns the dependency.
+    let lowLimit: Double
+    let highLimit: Double
     /// Line and limit markers — follows the screen's text color, so night mode
     /// turns the whole strip red along with everything else.
     let strokeColor: Color
@@ -41,8 +45,7 @@ struct TrendStrip: View {
             }
 
             // Limits first, so the filled area reads as passing over them.
-            let thresholds = UnitSettingsStore.shared.effectiveThresholds()
-            for limit in [thresholds.low, thresholds.high]
+            for limit in [lowLimit, highLimit]
                 where limit >= bounds.lower && limit <= bounds.upper
             {
                 var marker = Path()
@@ -102,18 +105,17 @@ struct TrendStrip: View {
     /// one, plus headroom so the stroke never clips against the frame edge.
     private var verticalBounds: (lower: Double, upper: Double) {
         guard let dataMin = values.min(), let dataMax = values.max() else {
-            return (70, 180)
+            return (lowLimit, highLimit)
         }
 
-        let thresholds = UnitSettingsStore.shared.effectiveThresholds()
         var lower = dataMin
         var upper = dataMax
 
-        if dataMin - thresholds.low <= limitProximity {
-            lower = min(lower, thresholds.low)
+        if dataMin - lowLimit <= limitProximity {
+            lower = min(lower, lowLimit)
         }
-        if thresholds.high - dataMax <= limitProximity {
-            upper = max(upper, thresholds.high)
+        if highLimit - dataMax <= limitProximity {
+            upper = max(upper, highLimit)
         }
 
         // The floor also keeps a dead-flat stretch from collapsing the span.

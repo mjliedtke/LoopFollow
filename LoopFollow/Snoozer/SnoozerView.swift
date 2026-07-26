@@ -13,6 +13,13 @@ struct SnoozerView: View {
     @ObservedObject var directionText = Observable.shared.directionText
     @ObservedObject var deltaText = Observable.shared.deltaText
     @ObservedObject var recentBGValues = Observable.shared.recentBGValues
+
+    // Backing store for the trend strip's limit markers. Observed so switching
+    // Range Mode, or nudging a custom bound, redraws the strip immediately
+    // rather than at the next reading.
+    @ObservedObject var timeInRangeModeRaw = Storage.shared.timeInRangeModeRaw
+    @ObservedObject var lowLine = Storage.shared.lowLine
+    @ObservedObject var highLine = Storage.shared.highLine
     @ObservedObject var bgStale = Observable.shared.bgStale
     @ObservedObject var bg = Observable.shared.bg
     @ObservedObject var snoozerEmoji = Storage.shared.snoozerEmoji
@@ -79,6 +86,13 @@ struct SnoozerView: View {
     /// The BG value keeps its range coloring unless the night palette overrides it.
     private var bgColor: Color {
         nightTint ?? bgTextColor.value
+    }
+
+    /// Limits for the trend strip's markers. Resolved through the same helper the
+    /// stats and the main chart use, so TIR, TITR and Custom are defined once and
+    /// the strip can never disagree with the rest of the app.
+    private var rangeLimits: (low: Double, high: Double) {
+        UnitSettingsStore.shared.effectiveThresholds()
     }
 
     private func noteInteraction() {
@@ -303,6 +317,8 @@ struct SnoozerView: View {
 
             TrendStrip(
                 values: recentBGValues.value,
+                lowLimit: rangeLimits.low,
+                highLimit: rangeLimits.high,
                 strokeColor: nightTint ?? .white,
                 accentColor: bgColor
             )
