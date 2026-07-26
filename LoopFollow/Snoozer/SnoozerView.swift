@@ -373,7 +373,7 @@ struct SnoozerView: View {
 
         if !symbol.isEmpty {
             Text(symbol)
-                .font(.system(size: isLandscape ? 52 : 62, weight: .bold))
+                .font(.system(size: isLandscape ? 44 : 52, weight: .bold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
                 .foregroundColor(loopStatusTint)
