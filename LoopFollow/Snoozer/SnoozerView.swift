@@ -417,13 +417,13 @@ struct SnoozerView: View {
         snapshot: GlucoseSnapshot,
         isLandscape: Bool
     ) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        HStack(alignment: .firstTextBaseline, spacing: 7) {
             Text(slot.gridLabel)
-                .font(.system(size: isLandscape ? 22 : 27, weight: .semibold))
+                .font(.system(size: isLandscape ? 19 : 23, weight: .semibold))
                 .foregroundColor(snoozerText(0.5))
 
             Text(slot.formattedValue(from: snapshot))
-                .font(.system(size: isLandscape ? 30 : 38, weight: .medium))
+                .font(.system(size: isLandscape ? 26 : 32, weight: .medium))
                 .foregroundColor(snoozerText(0.9))
         }
         .lineLimit(1)
