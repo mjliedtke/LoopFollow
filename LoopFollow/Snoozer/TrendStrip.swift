@@ -118,8 +118,11 @@ struct TrendStrip: View {
             upper = max(upper, highLimit)
         }
 
-        // The floor also keeps a dead-flat stretch from collapsing the span.
-        let padding = max((upper - lower) * 0.12, 3)
+        // A third of the span above and below caps the readings at ~60% of the
+        // strip's height, so even a large swing keeps clear air around it
+        // instead of slamming both edges. The floor also keeps a dead-flat
+        // stretch from collapsing the span.
+        let padding = max((upper - lower) / 3, 3)
         return (lower - padding, upper + padding)
     }
 }
