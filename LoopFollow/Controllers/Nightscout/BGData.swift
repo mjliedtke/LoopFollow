@@ -258,8 +258,8 @@ extension MainViewController {
         viewUpdateNSBG(sourceName: sourceName)
     }
 
-    /// How many deltas before the current one are published for display.
-    static let priorDeltaCount = 4
+    /// How many readings the trend strip draws — 12 at 5-minute spacing is an hour.
+    static let trendStripReadings = 12
 
     /// Formats a raw mg/dL delta for display, in the user's units, with an
     /// explicit sign so a rise reads as "+5" rather than "5".
@@ -320,15 +320,10 @@ extension MainViewController {
             // Delta handling
             Observable.shared.deltaText.value = self.formattedDelta(deltaBG)
 
-            // The deltas before the latest one, oldest first so a row of them
-            // reads left to right in time. Fewer are published when there is not
-            // enough history yet.
-            Observable.shared.priorDeltaTexts.value = (1 ... MainViewController.priorDeltaCount).reversed().compactMap { step in
-                let newer = latestEntryIndex - step
-                let older = newer - 1
-                guard older >= 0 else { return nil }
-                return self.formattedDelta(entries[newer].sgv - entries[older].sgv)
-            }
+            // Recent readings for the Snoozer's trend strip, oldest first.
+            Observable.shared.recentBGValues.value = entries
+                .suffix(MainViewController.trendStripReadings)
+                .map { Double($0.sgv) }
 
             // Live Activity storage
             Storage.shared.lastBgReadingTimeSeconds.value = lastBGTime

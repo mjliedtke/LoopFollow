@@ -27,10 +27,9 @@ class Observable {
     var bgTextColor = ObservableValue<Color>(default: .primary)
     var directionText = ObservableValue<String>(default: "-")
     var deltaText = ObservableValue<String>(default: "+0")
-    /// The deltas immediately before `deltaText`, oldest first, so a screen can
-    /// show how the last few readings moved rather than just the latest step.
-    /// The last element is the delta directly preceding `deltaText`.
-    var priorDeltaTexts = ObservableValue<[String]>(default: [])
+    /// The most recent glucose readings in mg/dL, oldest first, for the Snoozer's
+    /// trend strip. The last element is the reading behind `bgText`.
+    var recentBGValues = ObservableValue<[Double]>(default: [])
     var iobText = ObservableValue<String>(default: "--")
 
     var serverText = ObservableValue<String>(default: "Server")

@@ -12,7 +12,7 @@ struct SnoozerView: View {
     @ObservedObject var bgTextColor = Observable.shared.bgTextColor
     @ObservedObject var directionText = Observable.shared.directionText
     @ObservedObject var deltaText = Observable.shared.deltaText
-    @ObservedObject var priorDeltaTexts = Observable.shared.priorDeltaTexts
+    @ObservedObject var recentBGValues = Observable.shared.recentBGValues
     @ObservedObject var bgStale = Observable.shared.bgStale
     @ObservedObject var bg = Observable.shared.bg
     @ObservedObject var snoozerEmoji = Storage.shared.snoozerEmoji
@@ -301,8 +301,14 @@ struct SnoozerView: View {
                     .frame(maxWidth: .infinity, maxHeight: deltaMaxH)
             }
 
-            priorDeltas(isLandscape: isLandscape)
-                .frame(maxWidth: .infinity)
+            TrendStrip(
+                values: recentBGValues.value,
+                strokeColor: nightTint ?? .white,
+                accentColor: bgColor
+            )
+            .frame(height: isLandscape ? 84 : 140)
+            .padding(.top, 6)
+            .padding(.bottom, 10)
 
             Text(minAgoText.value)
                 .font(.system(size: 60))
@@ -343,24 +349,6 @@ struct SnoozerView: View {
                 }
             }
             Spacer()
-        }
-    }
-
-    /// The two deltas before the current one, oldest to newest left to right,
-    /// matching how time runs on the graphs. Renders nothing until there is
-    /// history.
-    @ViewBuilder
-    private func priorDeltas(isLandscape: Bool) -> some View {
-        if !priorDeltaTexts.value.isEmpty {
-            HStack(spacing: isLandscape ? 12 : 16) {
-                ForEach(Array(priorDeltaTexts.value.enumerated()), id: \.offset) { _, text in
-                    Text(text)
-                }
-            }
-            .font(.system(size: isLandscape ? 26 : 34))
-            .lineLimit(1)
-            .minimumScaleFactor(0.5)
-            .foregroundColor(snoozerText(0.45))
         }
     }
 
