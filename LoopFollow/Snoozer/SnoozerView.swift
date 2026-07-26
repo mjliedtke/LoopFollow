@@ -23,8 +23,6 @@ struct SnoozerView: View {
     @ObservedObject var bgStale = Observable.shared.bgStale
     @ObservedObject var bg = Observable.shared.bg
     @ObservedObject var snoozerEmoji = Storage.shared.snoozerEmoji
-    @ObservedObject var lastIOB = Storage.shared.lastIOB
-    @ObservedObject var lastCOB = Storage.shared.lastCOB
 
     // Night mode
     @ObservedObject var nightModeTrigger = Storage.shared.nightModeTrigger
@@ -343,7 +341,7 @@ struct SnoozerView: View {
                             .minimumScaleFactor(0.5)
                     }
 
-                    treatmentRow(isLandscape: isLandscape)
+                    metricSlots(isLandscape: isLandscape)
                         .padding(.bottom, isLandscape ? 14 : 22)
 
                     Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
@@ -357,43 +355,48 @@ struct SnoozerView: View {
         }
     }
 
-    // MARK: - IOB / COB
+    // MARK: - Metric slots
 
-    /// IOB and COB shown just above the clock. Values come from the same store
-    /// the Live Activity reads, so they are populated by both the Loop and the
-    /// Trio/OpenAPS device-status paths.
-    private func treatmentRow(isLandscape: Bool) -> some View {
-        HStack(spacing: isLandscape ? 20 : 28) {
-            treatmentValue(label: "IOB", value: iobDisplay, isLandscape: isLandscape)
-            treatmentValue(label: "COB", value: cobDisplay, isLandscape: isLandscape)
+    /// The four metrics above the clock, mirroring the Live Activity's 2×2 grid
+    /// so both surfaces are configured in one place (Settings → Live Activity →
+    /// Grid Slots). Empty slots are dropped rather than left as holes, so
+    /// configuring fewer than four just makes a shorter block.
+    ///
+    /// Rebuilt inside the clock's `TimelineView`, so the values refresh every
+    /// second without this view having to observe each metric's own store.
+    @ViewBuilder
+    private func metricSlots(isLandscape: Bool) -> some View {
+        let configured = LAAppGroupSettings.slots().filter { $0 != .none }
+
+        if !configured.isEmpty, let snapshot = GlucoseSnapshotBuilder.build(from: StorageCurrentGlucoseStateProvider()) {
+            VStack(spacing: isLandscape ? 6 : 10) {
+                ForEach(Array(stride(from: 0, to: configured.count, by: 2)), id: \.self) { start in
+                    HStack(spacing: isLandscape ? 20 : 28) {
+                        ForEach(configured[start ..< min(start + 2, configured.count)], id: \.self) { slot in
+                            metricSlot(slot, snapshot: snapshot, isLandscape: isLandscape)
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private func treatmentValue(label: String, value: String, isLandscape: Bool) -> some View {
+    private func metricSlot(
+        _ slot: LiveActivitySlotOption,
+        snapshot: GlucoseSnapshot,
+        isLandscape: Bool
+    ) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(label)
-                .font(.system(size: isLandscape ? 24 : 30, weight: .semibold))
+            Text(slot.gridLabel)
+                .font(.system(size: isLandscape ? 22 : 27, weight: .semibold))
                 .foregroundColor(snoozerText(0.5))
 
-            Text(value)
-                .font(.system(size: isLandscape ? 34 : 42, weight: .medium))
+            Text(slot.formattedValue(from: snapshot))
+                .font(.system(size: isLandscape ? 30 : 38, weight: .medium))
                 .foregroundColor(snoozerText(0.9))
         }
         .lineLimit(1)
         .minimumScaleFactor(0.5)
-    }
-
-    /// Mirrors `InsulinMetric.formattedValue()` — one decimal until 10 U.
-    private var iobDisplay: String {
-        guard let iob = lastIOB.value else { return "--" }
-        let decimals = abs(iob) >= 10 ? 0 : 1
-        return Localizer.formatToLocalizedString(iob, maxFractionDigits: decimals, minFractionDigits: 0) + " U"
-    }
-
-    /// Mirrors `CarbMetric` — whole grams.
-    private var cobDisplay: String {
-        guard let cob = lastCOB.value else { return "--" }
-        return Localizer.formatToLocalizedString(cob, maxFractionDigits: 0, minFractionDigits: 0) + " g"
     }
 
     private var bgEmoji: String {
