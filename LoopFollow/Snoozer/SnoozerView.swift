@@ -21,6 +21,8 @@ struct SnoozerView: View {
     @ObservedObject var lowLine = Storage.shared.lowLine
     @ObservedObject var highLine = Storage.shared.highLine
     @ObservedObject var bgStale = Observable.shared.bgStale
+    @ObservedObject var loopStatusText = Observable.shared.loopStatusText
+    @ObservedObject var isNotLooping = Observable.shared.isNotLooping
     @ObservedObject var bg = Observable.shared.bg
     @ObservedObject var snoozerEmoji = Storage.shared.snoozerEmoji
 
@@ -291,6 +293,8 @@ struct SnoozerView: View {
             // Arrow and delta share a line in both orientations — stacking them in
             // portrait cost a whole row of height for two short glyphs.
             HStack(alignment: .firstTextBaseline, spacing: isLandscape ? 20 : 26) {
+                loopStatusGlyph(isLandscape: isLandscape)
+
                 Text(directionText.value)
                     .font(.system(size: isLandscape ? 90 : 110, weight: .black))
                     .foregroundColor(snoozerText())
@@ -353,6 +357,33 @@ struct SnoozerView: View {
             }
             Spacer()
         }
+    }
+
+    // MARK: - Loop status
+
+    /// Whether the loop is running, shown left of the trend arrow.
+    ///
+    /// The home screen can spell out "⚠️ Not Looping!", but there is only room
+    /// for a mark here, so a failure collapses to a warning glyph. The other
+    /// states reuse the symbols the rest of the app already uses: ↻ looping,
+    /// ⏀ suspended, X no data.
+    @ViewBuilder
+    private func loopStatusGlyph(isLandscape: Bool) -> some View {
+        let symbol = isNotLooping.value ? "⚠︎" : loopStatusText.value
+
+        if !symbol.isEmpty {
+            Text(symbol)
+                .font(.system(size: isLandscape ? 52 : 62, weight: .bold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .foregroundColor(loopStatusTint)
+        }
+    }
+
+    /// A stalled loop keeps its warning color even under the night palette —
+    /// it is the one thing on this screen that should break the calm.
+    private var loopStatusTint: Color {
+        isNotLooping.value ? .yellow : snoozerText(0.7)
     }
 
     // MARK: - Metric slots
