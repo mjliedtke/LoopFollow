@@ -269,8 +269,7 @@ struct SnoozerView: View {
     private func leftColumn(isLandscape: Bool, barShowing: Bool) -> some View {
         let topPad: CGFloat = barShowing ? 0 : 16
         let bigMaxH: CGFloat = barShowing ? (isLandscape ? 210 : 220) : 240
-        let dirMaxH: CGFloat = barShowing ? (isLandscape ? 72 : 72) : 80
-        let deltaMaxH: CGFloat = barShowing ? (isLandscape ? 60 : 60) : 68
+        let dirMaxH: CGFloat = barShowing ? 72 : 80
         let ageMaxH: CGFloat = barShowing ? 36 : 40
 
         return VStack(spacing: 0) {
@@ -291,29 +290,19 @@ struct SnoozerView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: bigMaxH)
 
-            if isLandscape {
-                HStack(alignment: .firstTextBaseline, spacing: 20) {
-                    Text(directionText.value)
-                        .font(.system(size: 90, weight: .black))
-                    Text(deltaText.value)
-                        .font(.system(size: 70))
-                }
-                .minimumScaleFactor(0.5)
-                .foregroundColor(snoozerText())
-                .frame(maxWidth: .infinity, maxHeight: dirMaxH)
-            } else {
+            // Arrow and delta share a line in both orientations — stacking them in
+            // portrait cost a whole row of height for two short glyphs.
+            HStack(alignment: .firstTextBaseline, spacing: isLandscape ? 20 : 26) {
                 Text(directionText.value)
-                    .font(.system(size: 110, weight: .black))
-                    .minimumScaleFactor(0.5)
+                    .font(.system(size: isLandscape ? 90 : 110, weight: .black))
                     .foregroundColor(snoozerText())
-                    .frame(maxWidth: .infinity, maxHeight: dirMaxH)
 
                 Text(deltaText.value)
                     .font(.system(size: 70))
-                    .minimumScaleFactor(0.5)
                     .foregroundColor(snoozerText(0.8))
-                    .frame(maxWidth: .infinity, maxHeight: deltaMaxH)
             }
+            .minimumScaleFactor(0.5)
+            .frame(maxWidth: .infinity, maxHeight: dirMaxH)
 
             TrendStrip(
                 values: recentBGValues.value,
