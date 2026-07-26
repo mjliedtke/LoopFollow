@@ -349,10 +349,10 @@ struct SnoozerView: View {
                         .padding(.bottom, isLandscape ? 14 : 22)
 
                     Text(context.date, format: Date.FormatStyle(date: .omitted, time: .shortened))
-                        .font(.system(size: 82))
+                        .font(.system(size: 100))
                         .minimumScaleFactor(0.5)
                         .foregroundColor(snoozerText())
-                        .frame(height: 92)
+                        .frame(height: 112)
                 }
             }
             Spacer()
