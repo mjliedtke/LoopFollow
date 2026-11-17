@@ -160,11 +160,10 @@ extension MainViewController {
         let preferredLanguage = Storage.shared.speakLanguage.value
         let voiceLanguageCode = LanguageVoiceMapping.voiceLanguageCode(forAppLanguage: preferredLanguage)
         let texts = AnnouncementTexts.forLanguage(preferredLanguage)
-        let negligibleThreshold = 3
         let localizedCurrentValue = Localizer.toDisplayUnits(String(currentValue)).replacingOccurrences(of: ",", with: ".")
         let announcementText: String
 
-        if abs(bloodGlucoseDifference) <= negligibleThreshold {
+        if bloodGlucoseDifference == 0 {
             announcementText = "\(texts.currentBGIs) \(localizedCurrentValue) \(texts.stable)"
         } else {
             let directionText = bloodGlucoseDifference < 0 ? texts.decrease : texts.increase
