@@ -6,12 +6,13 @@ import Foundation
 extension MainViewController {
     // NS Bage Web Call
     func webLoadNSBage() {
-        let lastDateString = dateTimeUtils.getDateTimeString(addingDays: -60)
         let currentTimeString = dateTimeUtils.getDateTimeString()
 
+        // No lower bound (unlike the IAge fetch this mirrors): the battery-age
+        // alarm allows thresholds up to 90 days, and an overdue battery must be
+        // found however old its last change event is. Count 1 keeps it cheap.
         let parameters: [String: String] = [
             "find[eventType]": NightscoutUtils.EventType.bage.rawValue,
-            "find[created_at][$gte]": lastDateString,
             "find[created_at][$lte]": currentTimeString,
             "count": "1",
         ]

@@ -29,7 +29,7 @@ extension MainViewController {
     private static func treatmentOccurrenceDate(_ entry: [String: AnyObject], eventType: String?) -> Date? {
         let rawDate: String?
         switch eventType {
-        case "Pump Site Change", "Site Change", "Sensor Start", "Insulin Change":
+        case "Pump Site Change", "Site Change", "Sensor Start", "Insulin Change", "Pump Battery Change":
             rawDate = entry["created_at"] as? String
         default:
             rawDate = (entry["timestamp"] as? String) ?? (entry["created_at"] as? String)
